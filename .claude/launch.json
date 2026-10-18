@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {"name": "voice-test", "runtimeExecutable": "python3", "runtimeArgs": ["-m", "http.server", "8765", "--bind", "127.0.0.1", "--directory", "voice_test"], "port": 8765}
+  ]
+}

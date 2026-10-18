@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "asset.schema.json",
+  "title": "Asset (one line of assets.jsonl)",
+  "type": "object",
+  "required": ["id", "kind", "origin", "file", "license", "risk", "status"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^A[0-9]{3,}$"},
+    "kind": {"enum": ["photo", "video_clip", "graphic", "animation", "map", "chart", "music", "sfx", "voice", "font", "ai_image", "ai_video", "screenshot"]},
+    "origin": {"enum": ["own", "generated", "public_domain", "cc", "licensed_stock", "press_kit", "permission", "quotation_third_party"]},
+    "file": {"type": "string", "description": "Path under assets/"},
+    "source_url": {"type": ["string", "null"], "format": "uri"},
+    "author": {"type": ["string", "null"]},
+    "license": {"type": "string", "description": "SPDX-like id or contract reference, e.g. CC-BY-SA-4.0, PD-USGov-NASA, Envato-#123, quotation-§31-AZ"},
+    "attribution": {"type": ["string", "null"], "description": "Exact credit text if required"},
+    "usage_limits": {"type": "string"},
+    "quotation_purpose": {"type": ["string", "null"], "description": "For quotation_third_party: what our commentary says about it"},
+    "duration_s": {"type": ["number", "null"]},
+    "ai_generated": {"type": "boolean", "default": false},
+    "realistic_depiction_of_real_person": {"type": "boolean", "default": false},
+    "risk": {"enum": ["low", "medium", "high", "blocked"]},
+    "status": {"enum": ["candidate", "cleared", "rejected", "needs_license"]},
+    "sha256": {"type": "string"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "shotlist.schema.json",
+  "title": "Shot list (shotlist.json) – one per language, same scene ids",
+  "type": "object",
+  "required": [
+    "project",
+    "language",
+    "fps",
+    "resolution",
+    "scenes"
+  ],
+  "properties": {
+    "project": {
+      "type": "string"
+    },
+    "language": {
+      "enum": [
+        "cs",
+        "de"
+      ]
+    },
+    "fps": {
+      "enum": [
+        24,
+        25,
+        30
+      ]
+    },
+    "resolution": {
+      "enum": [
+        "1920x1080",
+        "3840x2160"
+      ]
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "narration",
+          "claim_ids",
+          "visuals"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^SC[0-9]{3}$"
+          },
+          "act": {
+            "enum": [
+              "hook",
+              "setup",
+              "rise",
+              "turn",
+              "consequence",
+              "payoff",
+              "outro"
+            ]
+          },
+          "narration": {
+            "type": "string"
+          },
+          "claim_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^C[0-9]{3,}$"
+            },
+            "description": "Empty only for non-factual lines (transitions, questions)"
+          },
+          "audio": {
+            "type": "object",
+            "properties": {
+              "voice_file": {
+                "type": "string"
+              },
+              "start_s": {
+                "type": "number"
+              },
+              "end_s": {
+                "type": "number"
+              }
+            }
+          },
+          "visuals": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": [
+                "template"
+              ],
+              "properties": {
+                "template": {
+                  "enum": [
+                    "photo_kenburns",
+                    "clip",
+                    "quote_card",
+                    "timeline",
+                    "map",
+                    "number_callout",
+                    "source_card",
+                    "title_card",
+                    "chart",
+                    "broll_generic",
+                    "clip_placeholder",
+                    "kinetic",
+                    "motion"
+                  ]
+                },
+                "asset_id": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "pattern": "^A[0-9]{3,}$"
+                },
+                "params": {
+                  "type": "object"
+                },
+                "start_offset_s": {
+                  "type": "number"
+                },
+                "duration_s": {
+                  "type": "number"
+                },
+                "fx": {
+                  "enum": [
+                    "none",
+                    "panel3d"
+                  ],
+                  "description": "panel3d = the card is rendered as a tilted 3D panel (lib/fx3d.panel3d)"
+                }
+              }
+            }
+          },
+          "on_screen_source": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Source id shown as on-screen citation"
+          },
+          "music_cue": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "sfx": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "narration_tts": {
+            "type": "string",
+            "description": "Text actually sent to TTS: numbers, dates and abbreviations written out in words. Required when narration contains digits."
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "pace": {
+      "type": "object",
+      "description": "Per-project tempo overrides: scene_gap_s (pause between scenes), xfade_s, transition, tts_engine",
+      "properties": {
+        "scene_gap_s": {
+          "type": "number",
+          "minimum": 0
+        },
+        "xfade_s": {
+          "type": "number",
+          "minimum": 0
+        },
+        "transition": {
+          "type": "string"
+        },
+        "tts_engine": {
+          "type": "string"
+        }
+      }
+    },
+    "music": {
+      "type": "object",
+      "description": "Music bed + SFX mix settings (lib/mix.py): cues {name: {asset, at} | {silence} | {resume}}, levels, sfx_gain_db"
+    }
+  },
+  "additionalProperties": false
+}

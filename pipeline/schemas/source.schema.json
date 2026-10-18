@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "source.schema.json",
+  "title": "Source (one line of sources.jsonl)",
+  "type": "object",
+  "required": [
+    "id",
+    "url",
+    "title",
+    "publisher",
+    "type",
+    "tier",
+    "accessed_at",
+    "snapshot"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^S[0-9]{3,}$"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "archive_url": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "uri"
+    },
+    "title": {
+      "type": "string"
+    },
+    "publisher": {
+      "type": "string"
+    },
+    "author": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "published_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "accessed_at": {
+      "type": "string",
+      "format": "date"
+    },
+    "type": {
+      "enum": [
+        "primary_self",
+        "primary_official",
+        "press_major",
+        "press_trade",
+        "tabloid",
+        "database",
+        "academic",
+        "social_post",
+        "video",
+        "podcast",
+        "other"
+      ]
+    },
+    "tier": {
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ],
+      "description": "A=primary/official or major outlet with own reporting; B=reputable trade press; C=tabloid/aggregator, needs corroboration; D=unusable (content farm, anonymous)"
+    },
+    "language": {
+      "type": "string"
+    },
+    "snapshot": {
+      "type": "string",
+      "description": "Path to local copy under sources/, e.g. sources/S001.html"
+    },
+    "sha256": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "publisher_cs": {
+      "type": "string"
+    },
+    "publisher_de": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "state.schema.json",
+  "title": "Project state (state.json)",
+  "type": "object",
+  "required": ["project", "created_at", "steps"],
+  "properties": {
+    "project": {"type": "string"},
+    "created_at": {"type": "string"},
+    "steps": {"type": "object", "additionalProperties": {
+      "type": "object", "required": ["status"],
+      "properties": {
+        "status": {"enum": ["pending", "running", "done", "failed", "stale", "approved", "rejected"]},
+        "inputs_sha256": {"type": "object", "additionalProperties": {"type": "string"},
+                          "description": "file -> hash at time of run; if any differs now, the step becomes stale"},
+        "outputs": {"type": "array", "items": {"type": "string"}},
+        "started_at": {"type": "string"}, "finished_at": {"type": "string"},
+        "approved_by": {"type": "string"}, "note": {"type": "string"},
+        "cost_czk": {"type": "number"}, "human_minutes": {"type": "number"}
+      }}}
+  },
+  "additionalProperties": false
+}

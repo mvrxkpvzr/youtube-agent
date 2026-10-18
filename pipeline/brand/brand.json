@@ -1,0 +1,18 @@
+{
+  "name": "pracovní identita v0 (k odsouhlasení)",
+  "bg": "#0E1420",
+  "bg2": "#1A2436",
+  "text": "#F4F1EA",
+  "muted": "#9AA3B2",
+  "accent": "#F2B134",
+  "line": "#2A3650",
+  "font": "fonts/Inter-Variable.ttf",
+  "font_license": "SIL OFL 1.1 (fonts/OFL.txt)",
+  "fps": 25,
+  "w": 1920,
+  "h": 1080,
+  "supersample": 2,
+  "xfade_s": 0.5,
+  "zoom_end": 1.05,
+  "transition": "fadeblack"
+}

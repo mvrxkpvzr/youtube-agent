@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poslechový test hlasů</title>
+<style>
+:root{--bg:#fafaf8;--fg:#1d1d1b;--muted:#6b6b66;--card:#fff;--line:#e2e2dc;--accent:#2f5d8a}
+@media (prefers-color-scheme:dark){:root{--bg:#161615;--fg:#ecebe6;--muted:#a3a29b;--card:#20201e;--line:#34342f;--accent:#8db7e0}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,sans-serif}
+main{max-width:860px;margin:0 auto;padding:24px 16px 80px}h1{font-size:1.6rem;margin:0 0 4px}h2{margin:32px 0 8px}
+p.lead,small{color:var(--muted)}.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin:14px 0}
+.card h3{margin:0 0 8px;font-size:1.1rem}audio{width:100%;margin:6px 0 10px}
+.row{display:grid;grid-template-columns:minmax(150px,1fr) auto;gap:8px;align-items:center;padding:4px 0;border-top:1px solid var(--line)}
+.scale{display:flex;gap:4px}.scale label{display:flex;flex-direction:column;align-items:center;font-size:.8rem;color:var(--muted);min-width:34px;min-height:44px;justify-content:center;cursor:pointer}
+textarea,input[type=text]{width:100%;padding:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);font:inherit}
+details{margin:8px 0}button{background:var(--accent);color:#fff;border:0;border-radius:8px;padding:12px 18px;font:inherit;cursor:pointer;margin-right:8px;min-height:44px}
+.tabs{display:flex;gap:8px;margin:16px 0}.tabs button[aria-pressed=false]{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+pre{white-space:pre-wrap;font:inherit}
+@media (max-width:560px){.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+<h1>Poslechový test hlasů</h1>
+<p class="lead">Vzorky jsou anonymní, v náhodném pořadí a mají sjednocenou hlasitost. Poslechněte každý alespoň 60 sekund. Hodnoťte 1 (velmi špatné) až 5 (výborné, jako profesionální vypravěč). Hodnotit lze jen jazyk, kterému dobře rozumíte.</p>
+<label>Vaše jméno nebo přezdívka <input type="text" id="who" autocomplete="off"></label>
+<label style="display:block;margin-top:8px">Mateřský jazyk / úroveň <input type="text" id="lvl" placeholder="např. čeština – rodilý, němčina – B2"></label>
+<div class="tabs" role="group" aria-label="Jazyk"><button id="t-cs" aria-pressed="true">Čeština</button><button id="t-de" aria-pressed="false">Němčina</button></div>
+<details><summary>Zobrazit text, který vzorky čtou</summary><pre id="text"></pre></details>
+<div id="list"></div>
+<h2>Odeslání</h2>
+<p>Výsledky se ukládají jen ve vašem prohlížeči. Po dokončení klikněte na „Stáhnout výsledky“ a soubor pošlete zpět.</p>
+<button id="dl">Stáhnout výsledky (JSON)</button><button id="cp">Zkopírovat do schránky</button> <small id="msg" role="status"></small>
+</main>
+<script>
+const ITEMS={"cs": ["P7", "R7", "T4"], "de": ["K9", "M6", "K5", "K6", "M8", "T2"]}, TEXTS={"cs": "Třiadvacátého dubna 2005 se na nově spuštěném webu objevilo krátké video. Spoluzakladatel Jawed Karim v něm stojí před výběhem se slony v zoo v San Diegu a říká jen pár vět. Že sloni mají opravdu, opravdu dlouhé choboty. Video trvá necelých dvacet sekund a jmenuje se „Me at the zoo“. Je to první záznam, který kdy vyšel na YouTube.\n\nTehdy nikdo netušil, co z toho vznikne. Karim a jeho kolegové Chad Hurley a Steve Chen chtěli vytvořit jednoduchou službu pro sdílení videí. Jenže už na podzim roku 2006 koupil YouTube Google. Za 1,65 miliardy dolarů.\n\nProč tolik? Odpověď nebyla v technologii. Byla v lidech.\n\nNa YouTube se poprvé objevila generace, která nepotřebovala televizi, vydavatele ani producenta. Stačila kamera, nápad a trpělivost. Z amatérů se stávali tvůrci, z tvůrců podnikatelé – a z podnikatelů celé mediální značky.\n\nDnes se tomu říká „creator economy“. Ale za tímhle pojmem se skrývá něco mnohem lidštějšího: příběhy lidí, kteří začínali v dětském pokoji a během několika let oslovovali miliony diváků. Někteří vydrželi. Jiní vyhořeli, udělali chybu, nebo zmizeli stejně rychle, jako se objevili.\n\nA právě tyhle příběhy nás zajímají. Ne drby a ne senzace, ale to, co se dá doložit. Jak to začalo. Co rozhodlo o úspěchu. A co se stalo, když se něco pokazilo.\n\nProtože každý slavný kanál má svůj první díl. A ten první díl obvykle vypadá úplně obyčejně. Jako dvacet sekund před výběhem se slony.\n", "de": "Am 23. April 2005 erschien auf einer gerade erst gestarteten Website ein kurzes Video. Mitgründer Jawed Karim steht darin vor dem Elefantengehege im Zoo von San Diego und sagt nur ein paar Sätze. Dass Elefanten wirklich, wirklich lange Rüssel haben. Das Video dauert keine zwanzig Sekunden und heißt „Me at the zoo“. Es ist der erste Clip, der jemals auf YouTube veröffentlicht wurde.\n\nDamals ahnte niemand, was daraus werden würde. Karim und seine Kollegen Chad Hurley und Steve Chen wollten einen einfachen Dienst zum Teilen von Videos bauen. Doch schon im Herbst 2006 kaufte Google YouTube. Für 1,65 Milliarden Dollar.\n\nWarum so viel? Die Antwort lag nicht in der Technik. Sie lag in den Menschen.\n\nAuf YouTube tauchte zum ersten Mal eine Generation auf, die weder Fernsehen noch Verlag noch Produzenten brauchte. Eine Kamera, eine Idee und Geduld reichten aus. Aus Amateuren wurden Creator, aus Creatorn Unternehmer – und aus Unternehmern ganze Medienmarken.\n\nHeute nennt man das „Creator Economy“. Doch hinter diesem Begriff steckt etwas viel Menschlicheres: die Geschichten von Leuten, die im Kinderzimmer angefangen haben und innerhalb weniger Jahre Millionen von Zuschauern erreichten. Manche blieben. Andere brannten aus, machten Fehler oder verschwanden genauso schnell, wie sie aufgetaucht waren.\n\nUnd genau diese Geschichten interessieren uns. Keine Gerüchte und keine Sensationen, sondern das, was sich belegen lässt. Wie es begann. Was über den Erfolg entschied. Und was geschah, als etwas schiefging.\n\nDenn jeder berühmte Kanal hat seine erste Folge. Und diese erste Folge sieht meistens ganz gewöhnlich aus. Wie zwanzig Sekunden vor einem Elefantengehege.\n"};
+const CRIT=[["nat","Přirozenost (zní jako člověk)"],["pron","Výslovnost (jména, cizí slova, čísla)"],["inton","Intonace a důraz ve větách"],["pause","Pauzy a tempo"],["stab","Stabilita (bez šumů, skoků, zadrhnutí)"],["fit","Vhodnost pro dokumentární video"]];
+let lang="cs", data={}; try{data=JSON.parse(localStorage.getItem("lt")||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem("lt",JSON.stringify(data))}catch(e){}};
+function render(){
+  document.getElementById("text").textContent=TEXTS[lang];
+  ["cs","de"].forEach(l=>document.getElementById("t-"+l).setAttribute("aria-pressed",l===lang));
+  const list=document.getElementById("list"); list.innerHTML="";
+  ITEMS[lang].forEach(code=>{
+    const d=data[code]||(data[code]={lang});
+    const c=document.createElement("section"); c.className="card";
+    c.innerHTML=`<h3>Vzorek ${code}</h3><audio controls preload="none" src="blind/${code}.m4a"></audio>`;
+    CRIT.forEach(([k,label])=>{
+      const r=document.createElement("div"); r.className="row";
+      r.innerHTML=`<span id="l-${code}-${k}">${label}</span><div class="scale" role="radiogroup" aria-labelledby="l-${code}-${k}">`+
+        [1,2,3,4,5].map(v=>`<label><input type="radio" name="${code}-${k}" value="${v}" ${d[k]==v?"checked":""}>${v}</label>`).join("")+`</div>`;
+      r.addEventListener("change",e=>{d[k]=+e.target.value;save()}); c.appendChild(r);
+    });
+    const t=document.createElement("label"); t.innerHTML=`<small>Konkrétní chyby (slovo, čas v nahrávce)</small><textarea rows="2"></textarea>`;
+    t.querySelector("textarea").value=d.notes||""; t.querySelector("textarea").addEventListener("input",e=>{d.notes=e.target.value;save()});
+    c.appendChild(t); list.appendChild(c);
+  });
+}
+const payload=()=>JSON.stringify({who:document.getElementById("who").value,level:document.getElementById("lvl").value,submitted_at:new Date().toISOString(),ratings:data},null,2);
+document.getElementById("t-cs").onclick=()=>{lang="cs";render()}; document.getElementById("t-de").onclick=()=>{lang="de";render()};
+document.getElementById("dl").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([payload()],{type:"application/json"}));a.download="hodnoceni_"+(document.getElementById("who").value||"anon")+".json";a.click()};
+document.getElementById("cp").onclick=async()=>{try{await navigator.clipboard.writeText(payload());document.getElementById("msg").textContent="Zkopírováno."}catch(e){document.getElementById("msg").textContent="Kopírování selhalo, použijte stažení."}};
+render();
+</script>
+</body></html>

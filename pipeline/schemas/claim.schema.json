@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "claim.schema.json",
+  "title": "Claim (one line of claims.jsonl)",
+  "type": "object",
+  "required": ["id", "text_cs", "status", "sensitivity", "evidence"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^C[0-9]{3,}$"},
+    "text_cs": {"type": "string", "description": "Atomic factual statement in Czech (master language)"},
+    "event_date": {"type": ["string", "null"], "description": "ISO date or partial (YYYY, YYYY-MM)"},
+    "status": {"enum": ["verified", "attributed", "disputed", "unverified", "rejected"],
+               "description": "verified=2 independent A/B sources or 1 primary; attributed=only the subject or one source says it (script must say 'podle...'); disputed=sources conflict; unverified/rejected=must not appear in script"},
+    "sensitivity": {"enum": ["low", "medium", "high"], "description": "high = crime, health, drugs, sexuality, minors, finances of private persons, allegations"},
+    "evidence": {
+      "type": "array", "minItems": 1,
+      "items": {"type": "object", "required": ["source_id", "supports"],
+        "properties": {
+          "source_id": {"type": "string", "pattern": "^S[0-9]{3,}$"},
+          "supports": {"enum": ["supports", "contradicts", "context"]},
+          "locator": {"type": "string", "description": "Quote ≤ 25 words, page, or timestamp hh:mm:ss"}
+        }, "additionalProperties": false}
+    },
+    "conflicts": {"type": "string"},
+    "reviewed_by": {"type": ["string", "null"]},
+    "reviewed_at": {"type": ["string", "null"], "format": "date"}
+  },
+  "additionalProperties": false
+}
