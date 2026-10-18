@@ -7,6 +7,8 @@ from .textprep import load_lexicon, prepare
 def voice(proj, lang, engine=None, force=False):
     c = cfg(); sl = load_shotlist(proj, lang); lex = load_lexicon(lang, proj)
     engine = engine or sl.get("pace", {}).get("tts_engine") or c["default_engine"][lang]; e = c["engines"][engine]
+    if e.get("unavailable"):
+        raise SystemExit(f"Hlas {engine} na této platformě neběží: {e['unavailable']}")
     if e.get("lexicon_file"):  # engine-specific respellings (Piper hacks like "jůtůb" confuse MOSS); missing file = none
         pl = proj / e["lexicon_file"].format(lang=lang); lex = json.loads(pl.read_text(encoding="utf-8")) if pl.exists() else {}
     outdir = proj / "audio" / lang; outdir.mkdir(parents=True, exist_ok=True)

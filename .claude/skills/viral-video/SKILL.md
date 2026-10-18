@@ -7,7 +7,7 @@ description: Produkce virálního, fakticky podloženého českého (později n�
 
 Cíl: **jedno opravdu dobré video**, ne hromadná výroba. Viralita přes silný příběh a nejlepší momenty, ale **nic nepodávat jako fakt bez dokladu**. Publikace jen po lidském schválení faktů a práv.
 
-Pracovní složka: `projects/<YYYY-MM>_<slug>/`. Nástroje jsou v `pipeline/` (viz `pipeline/README.md`). Python prostředí je trvale v `~/youtube-agent-env` (`pipeline/config.json` → `env_root`, obnova viz `pipeline/README_SETUP.md`). Spouštěj `$PY -I pipeline/...`, kde `PY=~/youtube-agent-env/venv/qwen/bin/python`.
+Pracovní složka: `projects/<YYYY-MM>_<slug>/`. Nástroje jsou v `pipeline/` (viz `pipeline/README.md`). Python prostředí je trvale v `~/youtube-agent-env` (`pipeline/config.json` → `env_root`, obnova viz `pipeline/README_SETUP.md`). Spouštěj `$PY -I pipeline/...`, kde `PY=~/youtube-agent-env/venv/qwen/bin/python` (Mac), v cloudu `PY=/home/user/ytenv/bin/python` po `bash setup/cloud_setup.sh` a projekty jsou v `/mnt/project-files/youtube/projects/`.
 
 ## Kroky (každý končí souborem; po chybě navaž od posledního hotového)
 

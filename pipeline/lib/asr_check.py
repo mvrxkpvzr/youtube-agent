@@ -31,10 +31,10 @@ def compare(reference, hypothesis, min_dropped=4):
     return {"wer": round(wer, 3), "errors": errors, "warnings": warnings}
 
 def transcribe(wav, lang, model):
-    import mlx_whisper, librosa
+    import librosa
+    from .asr import transcribe as whisper
     y, _ = librosa.load(str(wav), sr=16000, mono=True)   # array input: no system ffmpeg needed
-    return mlx_whisper.transcribe(y, path_or_hf_repo=model, language=lang, word_timestamps=True,
-                                  condition_on_previous_text=False)
+    return whisper(y, lang, model)
 
 def check(proj, lang):
     c = cfg(); sl = load_shotlist(proj, lang); report = {}

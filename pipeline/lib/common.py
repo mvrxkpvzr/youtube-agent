@@ -1,16 +1,24 @@
-import hashlib, json, os, subprocess, time
+import hashlib, json, os, subprocess, sys, time
 from pathlib import Path
 
 PIPE = Path(__file__).resolve().parents[1]
 
+def _overlay(base, over):
+    for k, v in over.items():
+        base[k] = _overlay(base.get(k, {}), v) if isinstance(v, dict) and isinstance(base.get(k), dict) else v
+    return base
+
 def cfg():
+    """config.json, with config["platform"][sys.platform] laid over it (Mac = base, Linux cloud = overlay).
+    Placeholders: {env_root} (models, voices, tools; YT_ENV_ROOT overrides), {venv} (Python env), {pipe} (this folder)."""
     c = json.loads((PIPE / "config.json").read_text())
-    root = c["env_root"]
+    c = _overlay(c, c.pop("platform", {}).get(sys.platform, {}))
+    root = os.environ.get("YT_ENV_ROOT") or c["env_root"]; venv = os.environ.get("YT_VENV") or c.get("venv", "")
     def sub(v):
-        if isinstance(v, str): return v.replace("{env_root}", root)
+        if isinstance(v, str): return v.replace("{env_root}", root).replace("{venv}", venv).replace("{pipe}", str(PIPE))
         if isinstance(v, dict): return {k: sub(x) for k, x in v.items()}
         return v
-    # ASR (mlx-whisper) and other in-process HF loads use the project's model cache
+    # ASR (Whisper) and other in-process HF loads use the project's model cache
     os.environ.setdefault("HF_HOME", f"{root}/hf")
     return sub(c)
 

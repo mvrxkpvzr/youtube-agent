@@ -30,3 +30,21 @@ $UV venv --python 3.12.15 $R/venv/qwen  && $UV pip install --python $R/venv/qwen
 Modely se stáhnou samy při prvním použití do `$R/hf`. Piper hlasy jsou na huggingface.co/rhasspy/piper-voices.
 
 Nezkopírováno (nekomerční nebo jen referenční): Chatterbox, OmniVoice, Qwen3-TTS 1.7B.
+
+## Cloud (Linux, claude.ai project)
+Agent běží v cloudovém kontejneru, ne na Macu. `pipeline/config.json → platform.linux` přepíše cesty a nástroje:
+
+| Co | Mac | Cloud |
+|---|---|---|
+| Python | `~/youtube-agent-env/venv/qwen` | `/home/user/ytenv` (vytvoří `setup/cloud_setup.sh` na začátku každé session) |
+| modely, hlasy, Blender | `~/youtube-agent-env` | `/mnt/project-files/youtube/env` (sdílené soubory projektu, přežijí konec session) |
+| zpětný přepis | mlx-whisper | faster-whisper na CPU (`lib/asr.py`) |
+| český hlas | MOSS přes MLX | zatím Piper; MOSS na CPU není ověřený |
+| Blender | `/Applications/Blender.app` | linuxový Blender v `{env_root}/blender/` |
+
+Projekty leží v `/mnt/project-files/youtube/projects/`. Stahování z huggingface.co a download.blender.org musí povolit síťové nastavení cloudového prostředí.
+```
+bash setup/cloud_setup.sh
+PY=/home/user/ytenv/bin/python
+$PY -I pipeline/vid.py status /mnt/project-files/youtube/projects/<projekt>
+```

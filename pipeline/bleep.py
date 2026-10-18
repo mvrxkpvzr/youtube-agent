@@ -29,9 +29,9 @@ def main():
     tmp = Path(tempfile.mkdtemp()); wav = tmp / "a.wav"
     subprocess.run([ff, "-y", "-loglevel", "error", "-i", a.inp, "-vn", "-ac", "1", "-ar", "48000", str(wav)], check=True)
     y, sr = sf.read(wav, dtype="float32")
-    import mlx_whisper, librosa
-    res = mlx_whisper.transcribe(librosa.resample(y, orig_sr=sr, target_sr=16000), path_or_hf_repo=cfg()["asr_model"],
-                                 language=a.lang, word_timestamps=True, condition_on_previous_text=False)
+    import librosa
+    from lib.asr import transcribe
+    res = transcribe(librosa.resample(y, orig_sr=sr, target_sr=16000), a.lang, cfg()["asr_model"])
     hits = []
     for seg in res["segments"]:
         for w in seg.get("words", []):

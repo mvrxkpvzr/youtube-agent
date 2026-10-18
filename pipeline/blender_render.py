@@ -10,7 +10,6 @@ from lib import fx3d
 from lib.common import cfg
 
 PIPE = Path(__file__).parent
-BLENDER = "/Applications/Blender.app/Contents/MacOS/Blender"
 
 def bloom(img, thr=200, sigma=18, amount=0.55):
     f = img.astype(np.float32)
@@ -25,7 +24,7 @@ def main():
     else: params.setdefault("samples", 32)
     work = Path(tempfile.mkdtemp(prefix=f"bl_{shot}_")); (work / "p.json").write_text(json.dumps(params, ensure_ascii=False))
     t0 = time.time()
-    r = subprocess.run([BLENDER, "-b", "--factory-startup", "-P", str(PIPE / "blender" / "shots.py"), "--", shot, str(work), str(work / "p.json")],
+    r = subprocess.run([cfg()["blender"], "-b", "--factory-startup", "-P", str(PIPE / "blender" / "shots.py"), "--", shot, str(work), str(work / "p.json")],
                        capture_output=True, text=True)
     if "RENDERED" not in r.stdout:
         sys.exit("Blender failed:\n" + (r.stdout[-3000:] + r.stderr[-3000:]))

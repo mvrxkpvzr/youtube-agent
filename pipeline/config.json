@@ -1,92 +1,141 @@
 {
-  "_comment": "Permanent environments in ~/youtube-agent-env (rebuilt 2026-10-18 from requirements.*.txt there). Models: hf/ (Qwen3-TTS 0.6B, whisper-large-v3-turbo).",
-  "env_root": "/Users/mirekpozar/youtube-agent-env",
-  "engines": {
+ "_comment": "Permanent environments in ~/youtube-agent-env (rebuilt 2026-10-18 from requirements.*.txt there). Models: hf/ (Qwen3-TTS 0.6B, whisper-large-v3-turbo).",
+ "env_root": "/Users/mirekpozar/youtube-agent-env",
+ "engines": {
+  "piper_cs": {
+   "python": "{env_root}/venv/piper/bin/python",
+   "worker": "workers/piper_worker.py",
+   "job": {
+    "model": "{env_root}/voices/cs_CZ-jirka-medium.onnx",
+    "espeak_data_dir": "/Users/mirekpozar/youtube-agent-env/venv/piper/lib/python3.11/site-packages/piper/espeak-ng-data"
+   },
+   "license": "GPL-3.0 code; voice dataset CC0",
+   "commercial": true
+  },
+  "piper_de": {
+   "python": "{env_root}/venv/piper/bin/python",
+   "worker": "workers/piper_worker.py",
+   "job": {
+    "model": "{env_root}/voices/de_DE-thorsten-high.onnx",
+    "espeak_data_dir": "/Users/mirekpozar/youtube-agent-env/venv/piper/lib/python3.11/site-packages/piper/espeak-ng-data"
+   },
+   "license": "GPL-3.0 code; voice dataset CC0",
+   "commercial": true
+  },
+  "qwen_de": {
+   "python": "{env_root}/venv/qwen/bin/python",
+   "worker": "workers/qwen_worker.py",
+   "job": {
+    "model": "Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice",
+    "speaker": "ryan",
+    "language": "German",
+    "dtype": "float32"
+   },
+   "env": {
+    "HF_HOME": "{env_root}/hf",
+    "PYTORCH_ENABLE_MPS_FALLBACK": "1"
+   },
+   "license": "Apache-2.0",
+   "commercial": true
+  },
+  "piper_cs_fast": {
+   "python": "{env_root}/venv/piper/bin/python",
+   "worker": "workers/piper_worker.py",
+   "job": {
+    "model": "{env_root}/voices/cs_CZ-jirka-medium.onnx",
+    "espeak_data_dir": "/Users/mirekpozar/youtube-agent-env/venv/piper/lib/python3.11/site-packages/piper/espeak-ng-data",
+    "length_scale": 0.82
+   },
+   "license": "GPL-3.0 code; voice dataset CC0",
+   "commercial": true
+  },
+  "piper_cs_viral": {
+   "python": "{env_root}/venv/piper/bin/python",
+   "worker": "workers/piper_worker.py",
+   "job": {
+    "model": "{env_root}/voices/cs_CZ-jirka-medium.onnx",
+    "espeak_data_dir": "/Users/mirekpozar/youtube-agent-env/venv/piper/lib/python3.11/site-packages/piper/espeak-ng-data",
+    "length_scale": 0.64
+   },
+   "license": "GPL-3.0 code; voice dataset CC0",
+   "commercial": true
+  },
+  "moss_cs": {
+   "python": "{env_root}/venv/mlxaudio/bin/python",
+   "worker": "workers/moss_worker.py",
+   "job": {
+    "model": "mlx-community/MOSS-TTS-Local-Transformer-v1.5-8bit",
+    "language": "Czech",
+    "ref_audio": "{pipe}/brand/voice/cs_narrator_ref.wav",
+    "ref_text": "Před dvěma a půl lety spal ve skladu v suterénu bratrského domu. S dluhem padesát tisíc dolarů.",
+    "target_wpm": 168,
+    "max_stretch": 1.25,
+    "max_tokens": 2400
+   },
+   "env": {
+    "HF_HOME": "{env_root}/hf"
+   },
+   "license": "Apache-2.0 (MOSS-TTS weights + code), mlx-audio MIT",
+   "commercial": true,
+   "lexicon_file": "lexicon.{lang}.moss.json"
+  }
+ },
+ "default_engine": {
+  "cs": "moss_cs",
+  "de": "qwen_de"
+ },
+ "asr_model": "mlx-community/whisper-large-v3-turbo",
+ "scene_gap_s": 0.8,
+ "loudness_target_lufs": -14,
+ "true_peak_dbtp": -1.0,
+ "voice_chain": "highpass=f=70,acompressor=threshold=-24dB:ratio=3:attack=5:release=120:makeup=4,alimiter=limit=0.8:level=false",
+ "blender": "/Applications/Blender.app/Contents/MacOS/Blender",
+ "platform": {
+  "linux": {
+   "_comment": "Cloud container (Linux, CPU only). Models and voices persist in the project's shared folder; the Python env is rebuilt per session by setup/cloud_setup.sh.",
+   "env_root": "/mnt/project-files/youtube/env",
+   "venv": "/home/user/ytenv",
+   "asr_model": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
+   "blender": "{env_root}/blender/blender",
+   "default_engine": {
+    "cs": "piper_cs",
+    "de": "piper_de"
+   },
+   "engines": {
     "piper_cs": {
-      "python": "{env_root}/venv/piper/bin/python",
-      "worker": "workers/piper_worker.py",
-      "job": {
-        "model": "{env_root}/voices/cs_CZ-jirka-medium.onnx",
-        "espeak_data_dir": "/Users/mirekpozar/youtube-agent-env/venv/piper/lib/python3.11/site-packages/piper/espeak-ng-data"
-      },
-      "license": "GPL-3.0 code; voice dataset CC0",
-      "commercial": true
+     "python": "{venv}/bin/python",
+     "job": {
+      "espeak_data_dir": null
+     }
     },
     "piper_de": {
-      "python": "{env_root}/venv/piper/bin/python",
-      "worker": "workers/piper_worker.py",
-      "job": {
-        "model": "{env_root}/voices/de_DE-thorsten-high.onnx",
-        "espeak_data_dir": "/Users/mirekpozar/youtube-agent-env/venv/piper/lib/python3.11/site-packages/piper/espeak-ng-data"
-      },
-      "license": "GPL-3.0 code; voice dataset CC0",
-      "commercial": true
-    },
-    "qwen_de": {
-      "python": "{env_root}/venv/qwen/bin/python",
-      "worker": "workers/qwen_worker.py",
-      "job": {
-        "model": "Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice",
-        "speaker": "ryan",
-        "language": "German",
-        "dtype": "float32"
-      },
-      "env": {
-        "HF_HOME": "{env_root}/hf",
-        "PYTORCH_ENABLE_MPS_FALLBACK": "1"
-      },
-      "license": "Apache-2.0",
-      "commercial": true
+     "python": "{venv}/bin/python",
+     "job": {
+      "espeak_data_dir": null
+     }
     },
     "piper_cs_fast": {
-      "python": "{env_root}/venv/piper/bin/python",
-      "worker": "workers/piper_worker.py",
-      "job": {
-        "model": "{env_root}/voices/cs_CZ-jirka-medium.onnx",
-        "espeak_data_dir": "/Users/mirekpozar/youtube-agent-env/venv/piper/lib/python3.11/site-packages/piper/espeak-ng-data",
-        "length_scale": 0.82
-      },
-      "license": "GPL-3.0 code; voice dataset CC0",
-      "commercial": true
+     "python": "{venv}/bin/python",
+     "job": {
+      "espeak_data_dir": null
+     }
     },
     "piper_cs_viral": {
-      "python": "{env_root}/venv/piper/bin/python",
-      "worker": "workers/piper_worker.py",
-      "job": {
-        "model": "{env_root}/voices/cs_CZ-jirka-medium.onnx",
-        "espeak_data_dir": "/Users/mirekpozar/youtube-agent-env/venv/piper/lib/python3.11/site-packages/piper/espeak-ng-data",
-        "length_scale": 0.64
-      },
-      "license": "GPL-3.0 code; voice dataset CC0",
-      "commercial": true
+     "python": "{venv}/bin/python",
+     "job": {
+      "espeak_data_dir": null
+     }
     },
     "moss_cs": {
-      "python": "{env_root}/venv/mlxaudio/bin/python",
-      "worker": "workers/moss_worker.py",
-      "job": {
-        "model": "mlx-community/MOSS-TTS-Local-Transformer-v1.5-8bit",
-        "language": "Czech",
-        "ref_audio": "/Users/mirekpozar/youtube agent/pipeline/brand/voice/cs_narrator_ref.wav",
-        "ref_text": "Před dvěma a půl lety spal ve skladu v suterénu bratrského domu. S dluhem padesát tisíc dolarů.",
-        "target_wpm": 168,
-        "max_stretch": 1.25,
-        "max_tokens": 2400
-      },
-      "env": {
-        "HF_HOME": "{env_root}/hf"
-      },
-      "license": "Apache-2.0 (MOSS-TTS weights + code), mlx-audio MIT",
-      "commercial": true,
-      "lexicon_file": "lexicon.{lang}.moss.json"
+     "unavailable": "MOSS běží přes MLX jen na Macu; verze pro PyTorch na CPU zatím není ověřená"
+    },
+    "qwen_de": {
+     "python": "{venv}/bin/python",
+     "job": {
+      "dtype": "float32"
+     }
     }
-  },
-  "default_engine": {
-    "cs": "moss_cs",
-    "de": "qwen_de"
-  },
-  "asr_model": "mlx-community/whisper-large-v3-turbo",
-  "scene_gap_s": 0.8,
-  "loudness_target_lufs": -14,
-  "true_peak_dbtp": -1.0,
-  "voice_chain": "highpass=f=70,acompressor=threshold=-24dB:ratio=3:attack=5:release=120:makeup=4,alimiter=limit=0.8:level=false"
+   }
+  }
+ }
 }

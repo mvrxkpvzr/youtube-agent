@@ -1,0 +1,14 @@
+# Cloud container (Linux, CPU). One env for the pipeline and the Piper worker.
+numpy
+scipy
+opencv-python-headless
+pillow
+librosa
+soundfile
+pyloudnorm
+jiwer
+jsonschema
+imageio-ffmpeg
+pedalboard
+faster-whisper
+piper-tts
