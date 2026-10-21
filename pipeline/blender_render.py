@@ -22,7 +22,11 @@ def main():
     params.setdefault("font", str(PIPE / "brand" / "fonts" / "ArchivoBlack-Regular.ttf"))
     if preview: params.update(pct=50, samples=12)
     else: params.setdefault("samples", 32)
-    work = Path(tempfile.mkdtemp(prefix=f"bl_{shot}_")); (work / "p.json").write_text(json.dumps(params, ensure_ascii=False))
+    if params.get("resume_dir"):  # continue an interrupted render: keep its frames, render only the missing tail
+        work = Path(params.pop("resume_dir")); params["frame_from"] = len(list((work / "frames").glob("*.png"))) + 1
+    else:
+        work = Path(tempfile.mkdtemp(prefix=f"bl_{shot}_"))
+    (work / "p.json").write_text(json.dumps(params, ensure_ascii=False))
     t0 = time.time()
     r = subprocess.run([cfg()["blender"], "-b", "--factory-startup", "-P", str(PIPE / "blender" / "shots.py"), "--", shot, str(work), str(work / "p.json")],
                        capture_output=True, text=True)

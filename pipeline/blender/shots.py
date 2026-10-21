@@ -511,5 +511,6 @@ if PARAMS.get("still_frame"):  # quick look at one frame
     sc = bpy.context.scene; sc.frame_set(min(PARAMS["still_frame"], frames)); sc.render.filepath = os.path.join(OUT, "frames", "still.png")
     bpy.ops.render.render(write_still=True)
 else:
+    if PARAMS.get("frame_from"): bpy.context.scene.frame_start = PARAMS["frame_from"]   # resume an interrupted render
     bpy.ops.render.render(animation=True)
 print(f"RENDERED {SHOT} {frames} frames -> {OUT}")
