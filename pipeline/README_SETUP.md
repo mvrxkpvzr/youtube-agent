@@ -39,8 +39,8 @@ Agent běží v cloudovém kontejneru, ne na Macu. `pipeline/config.json → pla
 | Python | `~/youtube-agent-env/venv/qwen` | `/home/user/ytenv` (vytvoří `setup/cloud_setup.sh` na začátku každé session) |
 | modely, hlasy, Blender | `~/youtube-agent-env` | `/mnt/project-files/youtube/env` (sdílené soubory projektu, přežijí konec session) |
 | zpětný přepis | mlx-whisper | faster-whisper na CPU (`lib/asr.py`) |
-| český hlas | MOSS přes MLX | zatím Piper; MOSS na CPU není ověřený |
-| Blender | `/Applications/Blender.app` | linuxový Blender v `{env_root}/blender/` |
+| český hlas | MOSS přes MLX | Piper (`piper_cs`); MOSS v cloudu zatím neběží |
+| Blender | `/Applications/Blender.app` | Blender 5.2.2 v `/home/user/blender` (archiv v `{env_root}/dist`), Eevee přes Mesa na CPU: 2 s náhledu ≈ 8 min |
 
 Projekty leží v `/mnt/project-files/youtube/projects/`. Stahování z huggingface.co a download.blender.org musí povolit síťové nastavení cloudového prostředí.
 ```

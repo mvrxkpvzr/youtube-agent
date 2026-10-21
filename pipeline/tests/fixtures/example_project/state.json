@@ -1,0 +1,201 @@
+{
+  "project": "_example_test_text",
+  "created_at": "2026-10-18",
+  "steps": {
+    "research": {
+      "status": "done",
+      "outputs": [
+        "sources.jsonl"
+      ]
+    },
+    "fact_check": {
+      "status": "pending",
+      "note": "C002 disputed – blocks script approval"
+    },
+    "voice_cs": {
+      "status": "done",
+      "inputs_sha256": {
+        "shotlist.cs.json": "1effd0bd05d2d610ead3b305b69b4ae9edf00d2c8d17b04e54522715804e1de4"
+      },
+      "outputs": [
+        "audio/cs/SC001.wav",
+        "audio/cs/SC002.wav",
+        "audio/cs/SC003.wav",
+        "audio/cs/SC004.wav",
+        "audio/cs/SC005.wav",
+        "audio/cs/SC006.wav",
+        "audio/cs/SC007.wav",
+        "audio/cs/SC008.wav",
+        "audio/cs/SC009.wav",
+        "audio/cs/SC010.wav"
+      ],
+      "finished_at": "2026-10-18T14:47:38",
+      "engine": "piper_cs",
+      "regenerated": [
+        "SC003"
+      ]
+    },
+    "asr_check_cs": {
+      "status": "done",
+      "inputs_sha256": {
+        "shotlist.cs.json": "1effd0bd05d2d610ead3b305b69b4ae9edf00d2c8d17b04e54522715804e1de4",
+        "audio/cs/SC001.wav": "6f869a356b9e237f627351af14a32949cda933bb85e9d22e0ca04925f908feb0",
+        "audio/cs/SC002.wav": "8e06db45099c28c0672a3e0093c794f01ae937bea357d36a2b23e82407c63740",
+        "audio/cs/SC003.wav": "90d44f804efd41ce9a1f5e2377a478cce8875bc5bdd952995ff7d665acb83f6d",
+        "audio/cs/SC004.wav": "6dc36c3090c1ac46c65522d7de50aef3b5d5c99d13edeae94ebfbe6cc5f67c55",
+        "audio/cs/SC005.wav": "5032261823e057bccfde55fb03995aac41c60eb5e6b7d2293d1900f23183d8ed",
+        "audio/cs/SC006.wav": "3e4d48ed066b193e826a2985fdf8750000f0f48514a8017e0199684294294669",
+        "audio/cs/SC007.wav": "d43d1538c3dd079309f6b45c77217a7371d446308b969faabb9ef5a36c48d3af",
+        "audio/cs/SC008.wav": "2558ea890772c8b290977d2530863cdcf666bdd116dbb6345f0e6f59d9448400",
+        "audio/cs/SC009.wav": "6b4aff92a3f943f2ff0fa5b84b32d2102c5e0088d976b4c3a8940aa4cd72cc13",
+        "audio/cs/SC010.wav": "752a76d2721178f1092a49b1425b5f12ced64d8c734226efbea03a963bffc856"
+      },
+      "outputs": [
+        "audio/cs/asr_report.json"
+      ],
+      "finished_at": "2026-10-18T14:48:09",
+      "errors": 0
+    },
+    "audio_cs": {
+      "status": "done",
+      "inputs_sha256": {
+        "audio/cs/SC001.wav": "6f869a356b9e237f627351af14a32949cda933bb85e9d22e0ca04925f908feb0",
+        "audio/cs/SC002.wav": "8e06db45099c28c0672a3e0093c794f01ae937bea357d36a2b23e82407c63740",
+        "audio/cs/SC003.wav": "90d44f804efd41ce9a1f5e2377a478cce8875bc5bdd952995ff7d665acb83f6d",
+        "audio/cs/SC004.wav": "6dc36c3090c1ac46c65522d7de50aef3b5d5c99d13edeae94ebfbe6cc5f67c55",
+        "audio/cs/SC005.wav": "5032261823e057bccfde55fb03995aac41c60eb5e6b7d2293d1900f23183d8ed",
+        "audio/cs/SC006.wav": "3e4d48ed066b193e826a2985fdf8750000f0f48514a8017e0199684294294669",
+        "audio/cs/SC007.wav": "d43d1538c3dd079309f6b45c77217a7371d446308b969faabb9ef5a36c48d3af",
+        "audio/cs/SC008.wav": "2558ea890772c8b290977d2530863cdcf666bdd116dbb6345f0e6f59d9448400",
+        "audio/cs/SC009.wav": "6b4aff92a3f943f2ff0fa5b84b32d2102c5e0088d976b4c3a8940aa4cd72cc13",
+        "audio/cs/SC010.wav": "752a76d2721178f1092a49b1425b5f12ced64d8c734226efbea03a963bffc856"
+      },
+      "outputs": [
+        "audio/cs/narration.wav",
+        "audio/cs/timings.json"
+      ],
+      "finished_at": "2026-10-18T14:48:09"
+    },
+    "subtitles_cs": {
+      "status": "done",
+      "inputs_sha256": {
+        "shotlist.cs.json": "ec075c2081160052f1731b9d777cc2b450d2d571f1887fb75ae529f143d9b02d",
+        "audio/cs/timings.json": "8a6a4a707cf0898c6db41e8de25eb85db371fd281a62d2d3b40b6b4aca2f5d03"
+      },
+      "outputs": [
+        "render/subtitles.cs.srt"
+      ],
+      "finished_at": "2026-10-18T14:58:51",
+      "warnings": 0
+    },
+    "render_cs": {
+      "status": "done",
+      "inputs_sha256": {
+        "shotlist.cs.json": "ec075c2081160052f1731b9d777cc2b450d2d571f1887fb75ae529f143d9b02d",
+        "audio/cs/narration.wav": "b9a1c52d542608693a7da1c3121da36115dfb4da21aad5a3e64a46a6802b634f"
+      },
+      "outputs": [
+        "render/preview.cs.mp4"
+      ],
+      "finished_at": "2026-10-18T15:05:05",
+      "shots": 12
+    },
+    "voice_de": {
+      "status": "done",
+      "inputs_sha256": {
+        "shotlist.de.json": "8e0e1b911754573dcb6018f005e44328699238bcaa61be4092e086f820fab014"
+      },
+      "outputs": [
+        "audio/de/SC001.wav",
+        "audio/de/SC002.wav",
+        "audio/de/SC003.wav",
+        "audio/de/SC004.wav",
+        "audio/de/SC005.wav",
+        "audio/de/SC006.wav",
+        "audio/de/SC007.wav",
+        "audio/de/SC008.wav",
+        "audio/de/SC009.wav",
+        "audio/de/SC010.wav"
+      ],
+      "finished_at": "2026-10-18T14:55:49",
+      "engine": "qwen_de",
+      "regenerated": [
+        "SC001",
+        "SC002",
+        "SC003",
+        "SC004",
+        "SC005",
+        "SC006",
+        "SC007",
+        "SC008",
+        "SC009",
+        "SC010"
+      ]
+    },
+    "asr_check_de": {
+      "status": "done",
+      "inputs_sha256": {
+        "shotlist.de.json": "8e0e1b911754573dcb6018f005e44328699238bcaa61be4092e086f820fab014",
+        "audio/de/SC001.wav": "e2d6bcea40183c289a07438a29cdbd5258d3335e60afe89873465f8987e5cc15",
+        "audio/de/SC002.wav": "4c168e02f91eac4d763b0084717e7470bccd8ec45c8b0e2e0bb716904797393a",
+        "audio/de/SC003.wav": "a467ad1edb25cb6f7d17a168ab7f1aeec153b4b6fbfe4f980a1a46fdecf843a9",
+        "audio/de/SC004.wav": "47b1f619df9c445a101536c271507570cd6ca3b75c7048dc3f80aa1d21ed3122",
+        "audio/de/SC005.wav": "87099eaa3e5d9c9397aad605a7fef6f77bfb7d96e42645b7f3f7d48212d01714",
+        "audio/de/SC006.wav": "26d606399d6a07dc69163ff0647e67d546bfdc14733fa8bcda7528e322262e54",
+        "audio/de/SC007.wav": "3403a273f81715601788cdb25957e25f3d9e91610f9f0e6af87d15032fdba90a",
+        "audio/de/SC008.wav": "21eb2661a43d21986e09d6eb2adf433e796be15739734621826fba3a9f082131",
+        "audio/de/SC009.wav": "3a05f2c622ce7350e80884c0b822c8ee7d1fec5f1f5e2ca7b2499011ed6cf143",
+        "audio/de/SC010.wav": "ae93ba85e4a82ab829ea3a375c683405b1a1df53b973cd1c2c8fcafb69582463"
+      },
+      "outputs": [
+        "audio/de/asr_report.json"
+      ],
+      "finished_at": "2026-10-18T14:56:22",
+      "errors": 0
+    },
+    "audio_de": {
+      "status": "done",
+      "inputs_sha256": {
+        "audio/de/SC001.wav": "e2d6bcea40183c289a07438a29cdbd5258d3335e60afe89873465f8987e5cc15",
+        "audio/de/SC002.wav": "4c168e02f91eac4d763b0084717e7470bccd8ec45c8b0e2e0bb716904797393a",
+        "audio/de/SC003.wav": "a467ad1edb25cb6f7d17a168ab7f1aeec153b4b6fbfe4f980a1a46fdecf843a9",
+        "audio/de/SC004.wav": "47b1f619df9c445a101536c271507570cd6ca3b75c7048dc3f80aa1d21ed3122",
+        "audio/de/SC005.wav": "87099eaa3e5d9c9397aad605a7fef6f77bfb7d96e42645b7f3f7d48212d01714",
+        "audio/de/SC006.wav": "26d606399d6a07dc69163ff0647e67d546bfdc14733fa8bcda7528e322262e54",
+        "audio/de/SC007.wav": "3403a273f81715601788cdb25957e25f3d9e91610f9f0e6af87d15032fdba90a",
+        "audio/de/SC008.wav": "21eb2661a43d21986e09d6eb2adf433e796be15739734621826fba3a9f082131",
+        "audio/de/SC009.wav": "3a05f2c622ce7350e80884c0b822c8ee7d1fec5f1f5e2ca7b2499011ed6cf143",
+        "audio/de/SC010.wav": "ae93ba85e4a82ab829ea3a375c683405b1a1df53b973cd1c2c8fcafb69582463"
+      },
+      "outputs": [
+        "audio/de/narration.wav",
+        "audio/de/timings.json"
+      ],
+      "finished_at": "2026-10-18T14:56:22"
+    },
+    "subtitles_de": {
+      "status": "done",
+      "inputs_sha256": {
+        "shotlist.de.json": "8e0e1b911754573dcb6018f005e44328699238bcaa61be4092e086f820fab014",
+        "audio/de/timings.json": "202f8348c0ce7bd0409388cfa50aa4d9f9e07a0bfc39726c4e643ed8d23b7090"
+      },
+      "outputs": [
+        "render/subtitles.de.srt"
+      ],
+      "finished_at": "2026-10-18T14:59:51",
+      "warnings": 6
+    },
+    "render_de": {
+      "status": "done",
+      "inputs_sha256": {
+        "shotlist.de.json": "8e0e1b911754573dcb6018f005e44328699238bcaa61be4092e086f820fab014",
+        "audio/de/narration.wav": "7d4ccd369ffa2ea3f0442db248428fb89ed5088af685adf1fdc73e62d793ac05"
+      },
+      "outputs": [
+        "render/preview.de.mp4"
+      ],
+      "finished_at": "2026-10-18T15:04:11",
+      "shots": 12
+    }
+  }
+}

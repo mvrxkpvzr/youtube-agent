@@ -1,0 +1,233 @@
+{
+ "project": "_example_test_text",
+ "language": "cs",
+ "fps": 25,
+ "resolution": "1920x1080",
+ "scenes": [
+  {
+   "id": "SC001",
+   "act": "hook",
+   "narration": "23. dubna 2005 se na nově spuštěném webu objevilo krátké video.",
+   "narration_tts": "Třiadvacátého dubna dva tisíce pět se na nově spuštěném webu objevilo krátké video.",
+   "claim_ids": [
+    "C001"
+   ],
+   "visuals": [
+    {
+     "template": "title_card",
+     "params": {
+      "text": "23. dubna 2005",
+      "sub": "Nově spuštěný web. Jedno krátké video."
+     }
+    }
+   ],
+   "on_screen_source": "S002",
+   "music_cue": null,
+   "sfx": []
+  },
+  {
+   "id": "SC002",
+   "act": "hook",
+   "narration": "Spoluzakladatel Jawed Karim v něm stojí před výběhem se slony v zoo v San Diegu a říká jen pár vět. Že sloni mají opravdu, opravdu dlouhé choboty.",
+   "claim_ids": [
+    "C004"
+   ],
+   "visuals": [
+    {
+     "template": "broll_generic",
+     "params": {
+      "text": "Zoo v San Diegu. Sloni. Pár vět do kamery."
+     }
+    }
+   ],
+   "on_screen_source": "S002",
+   "music_cue": null,
+   "sfx": []
+  },
+  {
+   "id": "SC003",
+   "act": "hook",
+   "narration": "Video trvá necelých dvacet sekund a jmenuje se v překladu „Já v zoo“. Je to první záznam, který kdy vyšel na YouTube.",
+   "claim_ids": [
+    "C002",
+    "C005"
+   ],
+   "visuals": [
+    {
+     "template": "title_card",
+     "params": {
+      "text": "„Me at the zoo“",
+      "sub": "první video na YouTube"
+     }
+    }
+   ],
+   "on_screen_source": "S002",
+   "music_cue": null,
+   "sfx": []
+  },
+  {
+   "id": "SC004",
+   "act": "setup",
+   "narration": "Tehdy nikdo netušil, co z toho vznikne. Karim a jeho kolegové Chad Hurley a Steve Chen chtěli vytvořit jednoduchou službu pro sdílení videí.",
+   "claim_ids": [
+    "C006"
+   ],
+   "visuals": [
+    {
+     "template": "broll_generic",
+     "params": {
+      "text": "Chad Hurley · Steve Chen · Jawed Karim"
+     }
+    }
+   ],
+   "on_screen_source": "S002",
+   "music_cue": null,
+   "sfx": []
+  },
+  {
+   "id": "SC005",
+   "act": "rise",
+   "narration": "Jenže už na podzim roku 2006 koupil YouTube Google. Za 1,65 miliardy dolarů.",
+   "narration_tts": "Jenže už na podzim roku dva tisíce šest koupil YouTube Google. Za jednu celou šedesát pět setin miliardy dolarů.",
+   "claim_ids": [
+    "C003"
+   ],
+   "visuals": [
+    {
+     "template": "source_card",
+     "params": {
+      "publisher": "Google – tisková zpráva",
+      "title": "Google To Acquire YouTube for $1.65 Billion in Stock",
+      "date": "9. října 2006",
+      "highlight": "„…for $1.65 billion in a stock-for-stock transaction.“",
+      "translation": "„…za 1,65 miliardy dolarů formou výměny akcií.“"
+     },
+     "duration_s": 1
+    },
+    {
+     "template": "number_callout",
+     "params": {
+      "value": "1,65 mld. USD",
+      "label": "Google kupuje YouTube (říjen 2006)"
+     },
+     "duration_s": 1
+    }
+   ],
+   "on_screen_source": "S001",
+   "music_cue": null,
+   "sfx": []
+  },
+  {
+   "id": "SC006",
+   "act": "turn",
+   "narration": "Proč tolik? Odpověď nebyla v technologii. Byla v lidech.",
+   "claim_ids": [],
+   "visuals": [
+    {
+     "template": "title_card",
+     "params": {
+      "text": "Proč tolik?"
+     }
+    }
+   ],
+   "on_screen_source": null,
+   "music_cue": null,
+   "sfx": []
+  },
+  {
+   "id": "SC007",
+   "act": "turn",
+   "narration": "Na YouTube se poprvé objevila generace, která nepotřebovala televizi, vydavatele ani producenta. Stačila kamera, nápad a trpělivost. Z amatérů se stávali tvůrci, z tvůrců podnikatelé – a z podnikatelů celé mediální značky.",
+   "claim_ids": [],
+   "visuals": [
+    {
+     "template": "timeline",
+     "params": {
+      "items": [
+       {
+        "date": "amatér",
+        "label": "kamera a nápad"
+       },
+       {
+        "date": "tvůrce",
+        "label": "pravidelné publikum"
+       },
+       {
+        "date": "podnikatel",
+        "label": "příjmy a tým"
+       },
+       {
+        "date": "značka",
+        "label": "mediální firma"
+       }
+      ],
+      "highlight": 3
+     }
+    }
+   ],
+   "on_screen_source": null,
+   "music_cue": null,
+   "sfx": []
+  },
+  {
+   "id": "SC008",
+   "act": "consequence",
+   "narration": "Dnes se tomu říká „creator economy“. Ale za tímhle pojmem se skrývá něco mnohem lidštějšího: příběhy lidí, kteří začínali v dětském pokoji a během několika let oslovovali miliony diváků. Někteří vydrželi. Jiní vyhořeli, udělali chybu, nebo zmizeli stejně rychle, jako se objevili.",
+   "claim_ids": [],
+   "visuals": [
+    {
+     "template": "title_card",
+     "params": {
+      "text": "„creator economy“",
+      "sub": "příběhy lidí, ne jen čísla"
+     },
+     "duration_s": 1
+    },
+    {
+     "template": "broll_generic",
+     "params": {
+      "text": "Někteří vydrželi. Jiní vyhořeli."
+     },
+     "duration_s": 1
+    }
+   ],
+   "on_screen_source": null,
+   "music_cue": null,
+   "sfx": []
+  },
+  {
+   "id": "SC009",
+   "act": "payoff",
+   "narration": "A právě tyhle příběhy nás zajímají. Ne drby a ne senzace, ale to, co se dá doložit. Jak to začalo. Co rozhodlo o úspěchu. A co se stalo, když se něco pokazilo.",
+   "claim_ids": [],
+   "visuals": [
+    {
+     "template": "broll_generic",
+     "params": {
+      "text": "Ne drby. To, co se dá doložit."
+     }
+    }
+   ],
+   "on_screen_source": null,
+   "music_cue": null,
+   "sfx": []
+  },
+  {
+   "id": "SC010",
+   "act": "outro",
+   "narration": "Protože každý slavný kanál má svůj první díl. A ten první díl obvykle vypadá úplně obyčejně. Jako dvacet sekund před výběhem se slony.",
+   "claim_ids": [],
+   "visuals": [
+    {
+     "template": "title_card",
+     "params": {
+      "text": "Každý slavný kanál má svůj první díl."
+     }
+    }
+   ],
+   "on_screen_source": null,
+   "music_cue": null,
+   "sfx": []
+  }
+ ]
+}

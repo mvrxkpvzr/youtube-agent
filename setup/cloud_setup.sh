@@ -19,4 +19,13 @@ for v in cs_CZ-jirka-medium de_DE-thorsten-high; do
   curl -fsSL -o "$ROOT/voices/$v.onnx" "$base.onnx" && curl -fsSL -o "$ROOT/voices/$v.onnx.json" "$base.onnx.json" \
     || { rm -f "$ROOT/voices/$v.onnx"; echo "WARN: hlas $v nejde stáhnout (je povolený huggingface.co?)"; }
 done
+# Blender 5.2.2 (same as on the Mac): tarball cached in the shared folder, unpacked locally (fast).
+# Eevee needs EGL; Mesa renders it on the CPU.
+BL=/home/user/blender; TB=blender-5.2.2-linux-x64.tar.xz; D="$ROOT/dist"; mkdir -p "$D"
+if [ ! -x "$BL/blender" ]; then
+  [ -s "$D/$TB" ] || { curl -fsSL -o "$D/$TB" "https://download.blender.org/release/Blender5.2/$TB" && curl -fsSL -o "$D/blender-5.2.2.sha256" "https://download.blender.org/release/Blender5.2/blender-5.2.2.sha256"; } || echo "WARN: Blender nejde stáhnout (je povolený download.blender.org?)"
+  if [ -s "$D/$TB" ] && (cd "$D" && grep linux-x64 blender-5.2.2.sha256 | sha256sum -c - >/dev/null); then mkdir -p "$BL" && tar xJf "$D/$TB" -C "$BL" --strip-components=1; else echo "WARN: Blender neověřen, přeskočeno"; fi
+fi
+[ -e /usr/lib/x86_64-linux-gnu/libEGL.so.1 ] || { (apt-get update -qq && apt-get install -y -qq libegl1 libegl-mesa0 libgl1-mesa-dri libxkbcommon0 libsm6 libxi6 libxrender1 libxxf86vm1 libxfixes3) >/dev/null 2>&1 || echo "WARN: knihovny EGL pro Blender se nenainstalovaly"; }
+[ -x "$BL/blender" ] && echo "blender ok: $("$BL/blender" -b --factory-startup --version 2>/dev/null | head -1)"
 echo "Spouštění: $VENV/bin/python -I pipeline/vid.py ..."

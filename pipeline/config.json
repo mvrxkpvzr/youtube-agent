@@ -96,7 +96,7 @@
    "env_root": "/mnt/project-files/youtube/env",
    "venv": "/home/user/ytenv",
    "asr_model": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
-   "blender": "{env_root}/blender/blender",
+   "blender": "/home/user/blender/blender",
    "default_engine": {
     "cs": "piper_cs",
     "de": "piper_de"

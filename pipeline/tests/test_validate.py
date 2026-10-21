@@ -1,7 +1,7 @@
-"""Run: python pipeline/tests/test_validate.py  (uses projects/_example_test_text)"""
+"""Run: python pipeline/tests/test_validate.py  (uses tests/fixtures/example_project)"""
 import json, shutil, subprocess, sys, tempfile
 from pathlib import Path
-ROOT = Path(__file__).resolve().parents[2]; EX = ROOT / "projects" / "_example_test_text"; V = ROOT / "pipeline" / "validate.py"
+ROOT = Path(__file__).resolve().parents[2]; EX = Path(__file__).resolve().parent / "fixtures" / "example_project"; V = ROOT / "pipeline" / "validate.py"
 def run(p): r = subprocess.run([sys.executable, str(V), str(p)], capture_output=True, text=True); return r.returncode, r.stdout
 code, out = run(EX); assert code == 0, out; print("ok: example passes")
 with tempfile.TemporaryDirectory() as d:

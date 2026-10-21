@@ -1,0 +1,64 @@
+{
+  "SC001": {
+    "wer": 0.091,
+    "errors": [],
+    "warnings": [],
+    "transcript": "23. dubna 2005 se na nově zpuštěném webu objevilo krátké video."
+  },
+  "SC002": {
+    "wer": 0.111,
+    "errors": [],
+    "warnings": [],
+    "transcript": "Spoluzakladatel Javed Karim v něm stojí před vyběhem se slony v zoo v San Diego a říká jen pár vět, že sloni mají opravdu, opravdu dlouhé choboty."
+  },
+  "SC003": {
+    "wer": 0.182,
+    "errors": [],
+    "warnings": [
+      "WER 18% – poslechni celou scénu"
+    ],
+    "transcript": "Video trvá necelých 20 sekund a jmenuje se v překladu Vyávzo. Je to první záznam, který kdy vyšel na YouTube."
+  },
+  "SC004": {
+    "wer": 0.043,
+    "errors": [],
+    "warnings": [],
+    "transcript": "Tehdy nikdo netušil, co z toho vznikne. Karim a jeho kolegové Chad Herley a Steve Chen chtěli vytvořit jednoduchou službu pro sdílení videí."
+  },
+  "SC005": {
+    "wer": 0.0,
+    "errors": [],
+    "warnings": [],
+    "transcript": "Jenže už na podzim roku 2006 koupil YouTube Google za 1,65 miliardy dolarů."
+  },
+  "SC006": {
+    "wer": 0.0,
+    "errors": [],
+    "warnings": [],
+    "transcript": "Proč tolik? Odpověď nebyla v technologii. Byla v lidech."
+  },
+  "SC007": {
+    "wer": 0.0,
+    "errors": [],
+    "warnings": [],
+    "transcript": "Na YouTube se poprvé objevila generace, která nepotřebovala televizi, vydavatele ani producenta. Stačila kamera, nápad a trpělivost. Z amatérů se stávali tvůrci, z tvůrců podnikatelé a z podnikatelů celé mediální značky."
+  },
+  "SC008": {
+    "wer": 0.024,
+    "errors": [],
+    "warnings": [],
+    "transcript": "Dnes se tomu říká creator economy. Ale za tímhle pojmem se skrývá něco mnohem ličtějšího, příběhy lidí, kteří začínali v dětském pokoji a během několika let oslovovali miliony diváků. Někteří vydrželi, jiní vyhořeli, udělali chybu nebo zmizeli stejně rychle, jako se objevili."
+  },
+  "SC009": {
+    "wer": 0.094,
+    "errors": [],
+    "warnings": [],
+    "transcript": "A právě tyhle příběhy nás zajímají. Nedrby a ne senzace, ale to, co se dá doložit. Jak to začalo? Co rozhodlo úspěchu? A co se stalo, když se něco pokazilo?"
+  },
+  "SC010": {
+    "wer": 0.043,
+    "errors": [],
+    "warnings": [],
+    "transcript": "Protože každý slavný kanál má svůj první díl. A ten první díl obvykle vypadá úplně obyčejně. Jako 20 sekund před výběhem se slony."
+  }
+}
