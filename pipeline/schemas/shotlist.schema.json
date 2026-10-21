@@ -159,6 +159,26 @@
           "narration_tts": {
             "type": "string",
             "description": "Text actually sent to TTS: numbers, dates and abbreviations written out in words. Required when narration contains digits."
+          },
+          "purpose": {
+            "type": "string",
+            "description": "Why the scene exists: what it explains, changes or asks (knowledge/00, 12 § 7)"
+          },
+          "beats": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "question",
+                "rehook",
+                "twist",
+                "reveal",
+                "humor",
+                "payoff",
+                "breather",
+                "callback"
+              ]
+            },
+            "description": "Story beats in this scene; craft_check.py measures gaps between them (knowledge/04, 05)"
           }
         },
         "additionalProperties": false
