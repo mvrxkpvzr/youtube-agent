@@ -101,6 +101,7 @@ def place_sfx(shots, sl, starts, n, anchors):
         for name in sc.get("sfx", []):
             put(name, starts[sc["id"]], gains.get(name, -6))
     for s in shots:  # motion/3D shots get a soft whoosh into the cut
+        if gains.get("auto_whoosh", -14) <= -60: break   # turned off (e.g. -120 = no synthetic effects)
         if s["template"] == "motion" and s["t0"] > 0.5 and not any(abs(u[0] - s["t0"]) < 0.3 for u in used):
             put("whoosh", s["t0"], gains.get("auto_whoosh", -14))
     return lane, sorted(used)
