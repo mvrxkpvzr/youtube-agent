@@ -122,9 +122,12 @@ def mix(proj, lang):
     bed = music_bed(proj, sl, starts, total, n)
     bed_gain = db(gaps) + (db(under) - db(gaps)) * duck  # LU below the voice
     lane, used = place_sfx(shots, sl, starts, n, anchors)
-    out = voice + bed * bed_gain + fx(SFX_GLUE, lane)[:n]
-    out = (out / max(1.0, np.abs(out).max() / 0.98)).astype(np.float32)
+    stem = bed * bed_gain + fx(SFX_GLUE, lane)[:n]
+    out = voice + stem; k = max(1.0, np.abs(out).max() / 0.98)
+    out = (out / k).astype(np.float32)
     path = d / "mix.wav"; sf.write(path, out.astype(np.float32), SR, subtype="PCM_24")
+    # music + SFX without the voice, same gain as in mix.wav: an editor lays it under the per-scene narration (lib/editplan)
+    sf.write(d / "bed.wav", (stem / k).astype(np.float32), SR, subtype="PCM_24")
     update_state(proj, f"mix_{lang}", "done", inputs=[proj / f"shotlist.{lang}.json", d / "narration.wav"], outputs=[path],
                  sfx=[f"{t}s {nme}" for t, nme in used])
     return path, used

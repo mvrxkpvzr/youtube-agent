@@ -23,8 +23,11 @@ $PY -I pipeline/tools_lexicon_probe.py piper_cs cs "<termín>" "<věta s {}>" va
 | `lib/graphics.py` | šablony: title, number, quote, source card (s překladem citace), timeline, photo, generic + řádek „Zdroj: …“ | ✅ vizuálně zkontrolováno |
 | `lib/render.py` | pomalý zoom na kartách, prolínání přes tmu, úprava hlasu (HP, kompresor, limiter), dvouprůchodová normalizace na −14 LUFS | ✅ |
 | `lib/qa.py` | rozlišení, fps, kodeky, LUFS, true peak, černé úseky, statický obraz, titulky, zpětný přepis, validátor, licence hlasu | ✅ (zachytil 3 skutečné chyby, viz výsledky) |
+| `lib/editplan.py` | střihový plán `render/editplan.<lang>.json` (scény s vlastními klipy, zvukem, titulky, přechody; schéma `schemas/editplan.schema.json`) a jeho převod na časovou osu editoru | ✅ `tests/test_editplan.py` + testovací projekt |
+| `lib/artcraft.py` + `artcraft/` | střih a export v **editoru ArtCraftu** bez obsluhy (`vid.py artcraft`), master do mp4, viz `artcraft/README.md` | ✅ testovací projekt fyre7 |
+| `lib/verify_export.py` | ověří export proti plánu: přehratelnost, délka, časová osa editoru, obraz klip po klipu, hlas po scénách, černé úseky | ✅ |
 | `validate.py` | schémata a křížové vazby tvrzení, zdrojů a assetů | ✅ 5/5 negativních testů |
 
-Testy: `pipeline/tests/test_validate.py`, `pipeline/tests/test_asr_compare.py`.
+Testy: `pipeline/tests/test_validate.py`, `pipeline/tests/test_asr_compare.py`, `pipeline/tests/test_editplan.py`.
 
 **Zatím chybí:** hudba a SFX (není licencovaná knihovna), export XML do Premiere (OpenTimelineIO), fotografie a klipy (šablona `photo_kenburns` existuje, ale je netestovaná), Remotion (zatím není potřeba).
