@@ -47,6 +47,7 @@ $PY -I pipeline/vid.py subs    <projekt> --lang cs
 $PY -I pipeline/vid.py render  <projekt> --lang cs
 $PY -I pipeline/vid.py qa      <projekt> --lang cs
 ```
+- QA kontroluje i fotosenzitivní blikání (řádky „blikání“; FAIL = ERROR, nepublikovat). Časová osa pro Resolve/Kdenlive (když ArtCraft nestačí): `$PY -I pipeline/otio_export.py <projekt> --lang cs`. Před úpravou `pipeline/blender/shots.py` přečti `third_party/el4cteo-blender-skills/api-changes-5x.md`.
 - Výslovnost jmen: `pipeline/tools_lexicon_probe.py` se skutečnou větou ze scény (výsledek závisí na kontextu). Výsledek zapiš do `projects/<p>/lexicon.cs.json`.
 - Vizuální kontrola: kontaktní list (`ffmpeg … fps=1/6,tile=5x5`) prohlédni sám. Hledej přetékání textu, překryvy, nečitelné karty a soukromé prvky ve screenshotech (vždy ořezat sidebar a avatar uživatele).
 
