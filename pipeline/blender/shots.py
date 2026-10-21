@@ -389,7 +389,7 @@ def shot_counter():
     final, label = PARAMS.get("value", 26191306), PARAMS.get("label", "NAŘÍZENO VRÁTIT")
     switch, done = int(PARAMS.get("switch", 3.2) * FPS), int(PARAMS.get("done", 7.0) * FPS)
     gold = mat("gold", ACCENT, metallic=1.0, rough=0.22, emit=0.35); white = mat("w", (0.96, 0.94, 0.9), emit=1.6)
-    num = text(first, size=1.3, extrude=0.26, bevel=0.035, material=gold, loc=(0, 0, 0.45))
+    num = text(first, size=1.3, extrude=0.18, bevel=0.012, material=gold, loc=(0, 0, 0.45)); num.data.space_character = 1.12
     lab = text(first_label, size=0.42, extrude=0.04, bevel=0.006, material=white, loc=(0, 0, -0.62))
     def fmt(v): return f"{int(v):,}".replace(",", " ") + " $"
     def upd(scene, *_):
@@ -404,7 +404,7 @@ def shot_counter():
     area_light((-4, -4, 5), (50, 0, -40), 900, (1, 0.85, 0.7), 5)
     area_light((5, -2, 2), (70, 0, 60), 500, (0.55, 0.7, 1), 3)
     area_light((0, 4, 3), (-60, 0, 180), 1200, (1, 0.8, 0.5), 6)
-    cam = camera(num, fstop=2.8, lens=35)
+    cam = camera(num, fstop=6.0, lens=35)
     key_path(cam, [(1, (-3.2, -8.2, 0.4)), (switch, (-1.2, -8.6, 0.5)), (frames, (1.4, -9.6, 0.7))], lambda f: (0, 0, 0.1))
     ease_all(cam)
     return frames
@@ -426,6 +426,8 @@ def shot_capacity():
     box((2.6, 0.06, 1.4), (0, fd / 2 + 1.05, 1.05), mat("screen", (0.2, 0.25, 0.35), emit=0.6))
     yel = mat("dot_in", ACCENT, emit=1.6); grey = mat("dot_out", (0.55, 0.58, 0.64), rough=0.5)
     bpy.ops.mesh.primitive_uv_sphere_add(radius=0.065, segments=10, ring_count=6, location=(0, 0, -5)); base = bpy.context.object
+    base.data.materials.append(grey)
+    def paint(o, m): o.material_slots[0].link = "OBJECT"; o.material_slots[0].material = m   # per-object: copies share the mesh
     random.seed(8)
     nx = 25; ny = max(1, inside // nx)
     pts_in = [(-fw / 2 + 0.2 + (fw - 0.4) * (i + 0.5) / nx + random.uniform(-0.03, 0.03), -fd / 2 + 0.2 + (fd - 0.4) * (j + 0.5) / ny + random.uniform(-0.03, 0.03))
@@ -440,14 +442,14 @@ def shot_capacity():
         o.location = (x, y, 0.065); o.keyframe_insert("location", frame=max(2, f0 + 10))
     for k, (x, y) in enumerate(pts_in):
         o = base.copy(); bpy.context.collection.objects.link(o)
-        o.active_material = yel; drop(o, x, y, t_in + int(k / len(pts_in) * 2.4 * FPS))
+        paint(o, yel); drop(o, x, y, t_in + int(k / len(pts_in) * 2.4 * FPS))
     pts_out.sort(key=lambda p: math.hypot(p[0], p[1]))
     for k, (x, y) in enumerate(pts_out):
-        o = base.copy(); bpy.context.collection.objects.link(o); o.active_material = grey
+        o = base.copy(); bpy.context.collection.objects.link(o); paint(o, grey)
         drop(o, x, y, t_out + int(k / len(pts_out) * 3.0 * FPS))
     base.hide_render = True
     white = mat("w", (0.96, 0.94, 0.9), emit=1.6); gold = mat("g", ACCENT, metallic=0.8, rough=0.25, emit=1.0)
-    l1 = text(PARAMS.get("label_in", "250"), size=0.9, extrude=0.08, bevel=0.01, material=gold, loc=(0, -0.2, 1.4))
+    l1 = text(PARAMS.get("label_in", "250"), size=0.9, extrude=0.08, bevel=0.01, material=gold, loc=(0, -fd / 2 - 0.9, 0.5))
     l2 = text(PARAMS.get("label_total", "1 800"), size=1.2, extrude=0.1, bevel=0.012, material=white, loc=(0, 3.2, 3.2))
     for o, f0 in ((l1, t_in + int(2.4 * FPS)), (l2, t_out + int(2.6 * FPS))):
         o.scale = (0, 0, 0); o.keyframe_insert("scale", frame=f0); o.scale = (1, 1, 1); o.keyframe_insert("scale", frame=f0 + 8)
