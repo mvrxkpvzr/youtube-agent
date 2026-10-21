@@ -25,6 +25,11 @@ $PY -I pipeline/tools_lexicon_probe.py piper_cs cs "<termín>" "<věta s {}>" va
 | `lib/qa.py` | rozlišení, fps, kodeky, LUFS, true peak, černé úseky, statický obraz, titulky, zpětný přepis, validátor, licence hlasu | ✅ (zachytil 3 skutečné chyby, viz výsledky) |
 | `validate.py` | schémata a křížové vazby tvrzení, zdrojů a assetů | ✅ 5/5 negativních testů |
 
-Testy: `pipeline/tests/test_validate.py`, `pipeline/tests/test_asr_compare.py`.
+| `craft_check.py` | řemeslo podle `knowledge/`: hook a první otázka, mezery bez beatu, AI fráze, rytmus vět, „a pak × ale/proto“, tempo, délky záběrů, mix obrazu, humor, hudba a SFX, délka názvu → `craft_report.<lang>.md` | ✅ testy + kopie pilotu Fyre |
+| `visual_plan.py` | manifest vizuálních zdrojů (`visual_sources.jsonl`, práva A–F) + vizuální plán scén → `visual_plan.<lang>.md` | ✅ testy |
+| `edl.py` | střihový list před drahým renderem → `render/edl.<lang>.json` + `.csv` (přenositelný do editoru) | ✅ testy + Fyre |
+| `gates.py` | brány kvality Q1–Q7 → `quality_gates.<lang>.json`; `vid.py render --final` vyžaduje Q1–Q5 | ✅ testy |
+
+Testy: `pipeline/tests/test_validate.py`, `pipeline/tests/test_asr_compare.py`, `pipeline/tests/test_knowledge_checks.py` (jen stdlib + jsonschema).
 
 **Zatím chybí:** hudba a SFX (není licencovaná knihovna), export XML do Premiere (OpenTimelineIO), fotografie a klipy (šablona `photo_kenburns` existuje, ale je netestovaná), Remotion (zatím není potřeba).
