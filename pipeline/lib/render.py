@@ -6,6 +6,8 @@ from .common import cfg, ffmpeg, run, load_shotlist, update_state, sha
 from .graphics import card, source_line, B, W as GW, H as GH
 from . import fx3d
 
+CHUNK = 24
+
 def jsonl(p): return {o["id"]: o for o in (json.loads(l) for l in p.read_text(encoding="utf-8").splitlines() if l.strip())} if p.exists() else {}
 
 def source_text(src, lang):
@@ -96,12 +98,25 @@ def render(proj, lang, preview=True):
         run([ff, "-y", "-hide_banner", "-loglevel", "error", "-loop", "1", "-framerate", str(fps), "-i", str(png), "-vf", vf,
              "-frames:v", str(n), *enc, str(out)])
         clips.append((out, s["dur"]))
-    # xfade chain
-    inputs, parts, last, off = [], [], "[0:v]", 0.0
-    for c, _ in clips: inputs += ["-i", str(c)]
-    for k in range(1, len(clips)):
-        off += clips[k - 1][1]; lab = f"[v{k}]"
-        parts.append(f"{last}[{k}:v]xfade=transition={transition}:duration={X}:offset={off:.3f}{lab}"); last = lab
+    # xfade chain; long videos are pre-joined in chunks (one ffmpeg with 100+ inputs ran out of 15 GB RAM)
+    def chain(cs):
+        inputs, parts, last, off = [], [], "[0:v]", 0.0
+        for c, _ in cs: inputs += ["-i", str(c)]
+        for k in range(1, len(cs)):
+            off += cs[k - 1][1]; lab = f"[v{k}]"
+            parts.append(f"{last}[{k}:v]xfade=transition={transition}:duration={X}:offset={off:.3f}{lab}"); last = lab
+        return inputs, parts, last
+    while len(clips) > CHUNK:
+        joined = []
+        for j in range(0, len(clips), CHUNK):
+            cs = clips[j:j + CHUNK]
+            if len(cs) == 1: joined.append(cs[0]); continue
+            out = work / f"chunk{len(clips)}_{j:03d}.mp4"; inputs, parts, last = chain(cs)
+            run([ff, "-y", "-hide_banner", "-loglevel", "error", *inputs, "-filter_complex", ";".join(parts), "-map", last,
+                 "-c:v", "libx264", "-preset", "ultrafast", "-crf", "6", "-pix_fmt", "yuv420p", "-r", str(fps), str(out)])
+            joined.append((out, sum(d for _, d in cs)))  # same offsets as the flat chain: chunk length = sum of its shot durations
+        clips = joined
+    inputs, parts, last = chain(clips)
     audio = work / "master.wav"; master_audio(proj, lang, audio)
     final = proj / "render" / (f"preview.{lang}.mp4" if preview else f"final.{lang}.mp4")
     fc = (";".join(parts) if parts else "[0:v]null[v0]") + f";[{len(clips)}:a]apad[a]"
