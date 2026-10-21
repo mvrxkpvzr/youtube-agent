@@ -1,6 +1,6 @@
 """Render a Blender 3D shot and finish it like the rest of the channel (bloom, grain, CA, vignette).
 Usage: python blender_render.py <shot> <out.mp4> '<params json>' [--preview]
-  shot: number | timeline | question   (see pipeline/blender/shots.py)
+  shot: number | timeline | question | sandwich | tents | tickets   (see pipeline/blender/shots.py)
   --preview renders at 50 % resolution with fewer samples (fast check)."""
 import json, subprocess, sys, tempfile, time
 from pathlib import Path
