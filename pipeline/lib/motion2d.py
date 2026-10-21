@@ -4,6 +4,7 @@ map_zoom  – stylised map from Natural Earth (public domain) with an eased zoom
             pulsing points, labels and an animated arrow.
 auction   – own mock-up of an online auction (no logos): running price and bidder count, then a bar
             comparison of two amounts.
+compare   – two-bar data graphic: claim grows, reality appears, claim fades to grey.
 Usage: python -m lib.motion2d <shot> <out.mp4> '<params json>'   (run from pipeline/)
 """
 import json, math, sys
@@ -188,7 +189,35 @@ def auction(out, p):
     wtr.stdin.close(); wtr.wait()
     return n
 
+def compare(out, p):
+    """Two-bar data graphic. p: dur, bars=[[value, shown, line1, line2], ...] (first = claim, second = reality).
+    The first bar grows, the second appears, then the first fades to grey."""
+    dur = p["dur"]; n = int(round(dur * FPS)); w, h = W * SS, H * SS
+    wtr = writer(str(out)); (v1, *_), (v2, *_) = p["bars"]
+    base = 860 * SS; top = 230 * SS; scale = (base - top) / max(v1, v2); GREY = (92, 100, 116)
+    def mix(a, b, k): return tuple(int(x * k + y * (1 - k)) for x, y in zip(a, b))
+    for i in range(n):
+        t = i / FPS
+        if STILL is not None and abs(t - STILL) >= 0.5 / FPS: continue
+        img = Image.new("RGB", (w, h), BG); d = ImageDraw.Draw(img)
+        fade = ease(min(1, max(0, (t - 3.0) / 0.9)))
+        for k, (v, shown, l1, l2) in enumerate(p["bars"]):
+            cx = (660 if k == 0 else 1260) * SS; bw = 280 * SS
+            g = ease(min(1, max(0, (t - (0.2 if k == 0 else 1.9)) / (1.5 if k == 0 else 0.6))))
+            hgt = max(6 * SS, v * scale * g) if g > 0 else 0
+            col = mix(GREY, ACCENT, fade) if k == 0 else (200, 70, 60)
+            if hgt: d.rectangle([cx - bw / 2, base - hgt, cx + bw / 2, base], fill=col)
+            al = min(1, max(0, (t - (0.9 if k == 0 else 2.2)) / 0.4))
+            tc = mix(mix(MUTED, TEXT, fade) if k == 0 else TEXT, BG, al)
+            d.text((cx, base - hgt - 30 * SS), shown, font=font(72), fill=tc, anchor="ms")
+            d.text((cx, base + 62 * SS), l1, font=font(38, "SemiBold"), fill=mix(TEXT, BG, al), anchor="ms")
+            d.text((cx, base + 112 * SS), l2, font=font(32, "Regular"), fill=mix(MUTED, BG, al), anchor="ms")
+        d.line([(360 * SS, base), (1560 * SS, base)], fill=LINE, width=3 * SS)
+        emit(wtr, img, t, 23, out)
+    wtr.stdin.close(); wtr.wait()
+    return n
+
 if __name__ == "__main__":
     shot, out, params = sys.argv[1], sys.argv[2], json.loads(sys.argv[3]); STILL = params.get("still"); LABEL = params.get("label")
-    n = {"map_zoom": map_zoom, "auction": auction}[shot](out, params)
+    n = {"map_zoom": map_zoom, "auction": auction, "compare": compare}[shot](out, params)
     print(json.dumps({"shot": shot, "out": out, "frames": n}))
