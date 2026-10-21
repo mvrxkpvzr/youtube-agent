@@ -113,7 +113,7 @@ def render(proj, lang, preview=True):
             if len(cs) == 1: joined.append(cs[0]); continue
             out = work / f"chunk{len(clips)}_{j:03d}.mp4"; inputs, parts, last = chain(cs)
             run([ff, "-y", "-hide_banner", "-loglevel", "error", *inputs, "-filter_complex", ";".join(parts), "-map", last,
-                 "-c:v", "libx264", "-preset", "ultrafast", "-crf", "6", "-pix_fmt", "yuv420p", "-r", str(fps), str(out)])
+                 "-c:v", "libx264", "-preset", "ultrafast", "-crf", "10", "-pix_fmt", "yuv420p", "-r", str(fps), str(out)])
             joined.append((out, sum(d for _, d in cs)))  # same offsets as the flat chain: chunk length = sum of its shot durations
         clips = joined
     inputs, parts, last = chain(clips)
@@ -124,6 +124,7 @@ def render(proj, lang, preview=True):
          "-map", last if parts else "[v0]", "-map", "[a]", "-c:v", "libx264", "-preset", "veryfast" if preview else "slow",
          "-crf", "20" if preview else "16", "-maxrate", "12M", "-bufsize", "24M", "-pix_fmt", "yuv420p", "-r", str(fps), "-c:a", "aac", "-b:a", "256k", "-ar", "48000",
          "-movflags", "+faststart", "-t", f"{total:.3f}", str(final)])
+    for f in work.glob("chunk*.mp4"): f.unlink()   # several GB of intermediates; shots stay for inspection
     update_state(proj, f"render_{lang}", "done", inputs=[proj / f"shotlist.{lang}.json", proj / "audio" / lang / "narration.wav"],
                  outputs=[final], shots=len(shots))
     return final, len(shots), total
