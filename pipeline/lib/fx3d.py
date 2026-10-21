@@ -123,3 +123,20 @@ def parallax(fg_rgba_path, bg_path, out, dur=4.0, push=0.10, fg_shift=60, bg_shi
         p.stdin.write(finish(np.clip(frame, 0, 255).astype(np.uint8), t, seed=seed).tobytes())
     p.stdin.close(); p.wait()
     return out
+
+_LABEL_CACHE = {}
+
+def label(frame, text, x=40, y=40, size=26, pad=16, alpha=0.55):
+    """Burn a disclosure label ('REKONSTRUKCE', 'ILUSTRACE') top-left: white Inter on black at 55 % opacity."""
+    if not text: return frame
+    if text not in _LABEL_CACHE:
+        from PIL import Image, ImageDraw, ImageFont
+        from pathlib import Path
+        f = ImageFont.truetype(str(Path(__file__).resolve().parents[1] / "brand" / "fonts" / "Inter-Variable.ttf"), size)
+        tw = int(ImageDraw.Draw(Image.new("L", (1, 1))).textlength(text, font=f)); w, h = tw + 2 * pad, size + 18
+        txt = Image.new("L", (w, h), 0); ImageDraw.Draw(txt).text((pad, h / 2), text, font=f, fill=255, anchor="lm")
+        _LABEL_CACHE[text] = np.asarray(txt, np.float32)[..., None] / 255.0
+    m = _LABEL_CACHE[text]; h, w = m.shape[:2]
+    roi = frame[y:y + h, x:x + w].astype(np.float32) * (1 - alpha)          # black box at alpha
+    frame[y:y + h, x:x + w] = np.clip(roi * (1 - m) + 255 * m, 0, 255).astype(np.uint8)
+    return frame

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "visual_plan.schema.json",
+  "title": "Visual plan (visual_plan.<lang>.json) – one entry per scene (knowledge/12 § 7)",
+  "type": "object",
+  "required": ["scenes"],
+  "properties": {
+    "project": {"type": "string"},
+    "language": {"type": "string"},
+    "scenes": {"type": "array", "items": {
+      "type": "object",
+      "required": ["id", "purpose", "visual_type", "status"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^SC[0-9]{3}$"},
+        "purpose": {"type": "string"},
+        "voiceover": {"type": "string"},
+        "visual_type": {"type": "string"},
+        "sources": {"type": "array", "items": {"type": "string", "pattern": "^V[0-9]{3,}$"}},
+        "rights": {"type": "string"},
+        "planned_edit": {"type": "string"},
+        "graphics": {"type": "string"},
+        "alternative": {"type": "string"},
+        "searches": {"type": "array", "items": {"type": "string"}, "description": "queries/methods tried (≥3 for key scenes without material)"},
+        "reconstruction_label": {"type": ["string", "null"], "description": "on-screen label when the scene shows our own reconstruction of a real event"},
+        "status": {"enum": ["research", "verified", "produced"]}
+      },
+      "additionalProperties": true
+    }}
+  },
+  "additionalProperties": true
+}
