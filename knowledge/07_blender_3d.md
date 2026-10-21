@@ -16,6 +16,8 @@ rozpad objektu / plánu / systému, metafory finančních toků a chaosu, izomet
 procházející prostředím, procedurální davy a opakující se struktury (instancování), typografie ve 3D.
 Špatné použití: 3D text jen „protože to jde“, dekorace bez informace, realistická podoba skutečné osoby (zakázáno).
 
+Změny API Blenderu 5.x (před psaním `shots.py`): `third_party/el4cteo-blender-skills/api-changes-5x.md` (po sloučení PR #2).
+
 ## Vizuální identita 3D (jednotná napříč videem)
 - Stylizace, ne fotorealismus: rekonstrukce nesmí působit jako autentický záznam. Kde hrozí záměna, popisek „rekonstrukce“.
 - Světlo: tmavě modrá stěna, teplá záře za objektem, lesklá podlaha, AgX, akcent `#F2B134` [U nás, TOGI/Fyre].

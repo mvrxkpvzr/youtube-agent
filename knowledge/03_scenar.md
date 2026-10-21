@@ -22,7 +22,10 @@ se nešetří na konec, rozloží se tak, aby každý úsek měl „wow“ momen
 3. **Otevřená otázka** do 25 s. [U nás] TOGI v1 měl první otázku v 55 s, v2 v 19 s.
 4. **Proč zůstat:** náznak, že konec přinese něco, co divák nečeká („a to nejpodivnější přijde až potom“).
    Musí se to opravdu stát, jinak je to clickbait.
-5. **Zakázáno v hooku:** pozdrav, „v dnešním videu“, představení kanálu, logo intro, shrnutí obsahu, sponzor.
+5. **Fakta do hooku vybírej podle neznalosti** [Praxe, cdeistopened/youtube-scriptwriting]: u každého kandidátního faktu
+   odhadni, kolik diváků ho **nezná**. Do hooku patří ten, který zná málokdo a přitom je pochopitelný hned.
+6. **Hlas, text na obrazovce a obraz v hooku říkají totéž** (jedna myšlenka, tři kanály), jinak se pozornost rozdělí.
+7. **Zakázáno v hooku:** pozdrav, „v dnešním videu“, představení kanálu, logo intro, shrnutí obsahu, sponzor.
 [Praxe] Cíl retence v 30. s ≥ 60–65 % (vidIQ). Ověř po publikaci v grafu „Úvod“.
 
 ## Pravidlo „ale / proto“ (Parker & Stone, South Park) [Praxe]
