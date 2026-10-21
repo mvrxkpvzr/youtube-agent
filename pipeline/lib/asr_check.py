@@ -3,13 +3,21 @@ Reference = the approved narration (display text, may contain digits); Whisper u
 import difflib, json, re, unicodedata
 from pathlib import Path
 from .common import cfg, load_shotlist, update_state
+from .csnum import collapse
 
-def norm_words(s):
-    s = unicodedata.normalize("NFC", s.lower()).replace("“", " ").replace("„", " ")
+_PROC = re.compile(r"procent(?:o|a|u|em|ech|ům)?")
+
+def raw_words(s):
+    """Lower-cased word tokens; numbers not yet merged (see norm_words)."""
+    s = unicodedata.normalize("NFC", s.lower()).replace("“", " ").replace("„", " ").replace("%", " procent")
     s = re.sub(r"(\d),(\d)", r"\1.\2", s)            # 1,65 -> 1.65 (both sides)
     s = re.sub(r"(?<=\d)\.(?!\d)", " ", s)            # ordinal dot "23." -> "23"
     s = re.sub(r"[^\w\s.]|(?<!\d)\.|\.(?!\d)", " ", s)
-    return s.split()
+    return ["procent" if _PROC.fullmatch(w) else w for w in s.split()]
+
+def norm_words(s):
+    """raw_words with spelled-out Czech numbers and digit groups merged ("dvacet šest milionů…" == "26 191 306")."""
+    return collapse(raw_words(s))[0]
 
 def numbers(words): return [w for w in words if re.fullmatch(r"\d+(\.\d+)?", w)]
 

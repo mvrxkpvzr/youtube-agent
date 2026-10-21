@@ -15,4 +15,12 @@ assert r["errors"] == [], r
 # Czech ordinal date written by Whisper as digits
 r = compare("Třiadvacátého dubna 2005 se objevilo video.", "23. dubna 2005 se objevilo video.")
 assert not any("vynechaný" in e for e in r["errors"]), r
-print("ok: 4 compare cases pass")
+# Czech numbers spelled out for TTS vs Whisper digits (Fyre Festival false alarms)
+for ref, hyp in [("vrátit dvacet šest milionů sto devadesát jedna tisíc tři sta šest dolarů", "vrátit 26 191 306 dolarů"),
+                 ("Konečná cena: dvě stě čtyřicet pět tisíc tři sta dolarů.", "Konečná cena – 245 300 dolarů."),
+                 ("Jedenáctého října dva tisíce osmnáct dostane šest let.", "11. října 2018 dostane 6 let."),
+                 ("ukazoval dva a půl tisíce rezervací, zhruba jedno procento", "ukazoval 2,5 tisíce rezervací, zhruba 1%")]:
+    r = compare(ref, hyp); assert r["errors"] == [] and r["wer"] == 0, (ref, r)
+r = compare("vrátit dvacet šest milionů dolarů", "vrátit 25 milionů dolarů")
+assert any("26000000" in e for e in r["errors"]), r
+print("ok: 9 compare cases pass")
