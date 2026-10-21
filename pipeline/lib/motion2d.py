@@ -10,7 +10,7 @@ import json, math, sys
 from pathlib import Path
 import numpy as np, cv2
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
-from .fx3d import W, H, FPS, ease, finish, writer
+from .fx3d import W, H, FPS, ease, finish, writer, label
 from .graphics import B, PIPE
 
 SS = 2                                     # supersample, frames are drawn at 2x and downscaled
@@ -29,10 +29,11 @@ def font(px, weight="Bold"):
         _FONTS[key] = f
     return _FONTS[key]
 
+LABEL = None   # params["label"]: disclosure label burned top-left ("ILUSTRACE")
 STILL = None   # set by __main__ from params["still"]: render only the frame at that time to <out>.png
 
 def emit(wtr, img, t, seed, out):
-    fr = to_frame(img, t, seed)
+    fr = label(to_frame(img, t, seed), LABEL)
     if STILL is not None:
         if abs(t - STILL) < 0.5 / FPS: cv2.imwrite(str(out) + ".png", fr)
         return
@@ -188,6 +189,6 @@ def auction(out, p):
     return n
 
 if __name__ == "__main__":
-    shot, out, params = sys.argv[1], sys.argv[2], json.loads(sys.argv[3]); STILL = params.get("still")
+    shot, out, params = sys.argv[1], sys.argv[2], json.loads(sys.argv[3]); STILL = params.get("still"); LABEL = params.get("label")
     n = {"map_zoom": map_zoom, "auction": auction}[shot](out, params)
     print(json.dumps({"shot": shot, "out": out, "frames": n}))

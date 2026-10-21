@@ -1,7 +1,8 @@
 """Render a Blender 3D shot and finish it like the rest of the channel (bloom, grain, CA, vignette).
 Usage: python blender_render.py <shot> <out.mp4> '<params json>' [--preview]
   shot: number | timeline | question | sandwich | tents | tickets   (see pipeline/blender/shots.py)
-  --preview renders at 50 % resolution with fewer samples (fast check)."""
+  --preview renders at 50 % resolution with fewer samples (fast check).
+  params.label burns a disclosure label top-left, e.g. "REKONSTRUKCE"."""
 import json, subprocess, sys, tempfile, time
 from pathlib import Path
 import numpy as np, cv2
@@ -39,7 +40,7 @@ def main():
         im = cv2.imread(str(fp))
         if im.shape[1] != fx3d.W: im = cv2.resize(im, (fx3d.W, fx3d.H), interpolation=cv2.INTER_CUBIC)
         im = bloom(im)
-        p.stdin.write(fx3d.finish(im, i / max(len(frames) - 1, 1), grain=0.03, ca=2.0, vignette=0.5, seed=7).tobytes())
+        p.stdin.write(fx3d.label(fx3d.finish(im, i / max(len(frames) - 1, 1), grain=0.03, ca=2.0, vignette=0.5, seed=7), params.get("label")).tobytes())
     p.stdin.close(); p.wait()
     print(json.dumps({"shot": shot, "out": str(out), "frames": len(frames), "blender_s": round(t_render, 1),
                       "total_s": round(time.time() - t0, 1), "frames_dir": str(work / "frames")}))
