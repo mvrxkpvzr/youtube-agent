@@ -98,7 +98,7 @@
    "asr_model": "mobiuslabsgmbh/faster-whisper-large-v3-turbo",
    "blender": "/home/user/blender/blender",
    "default_engine": {
-    "cs": "piper_cs",
+    "cs": "moss_cs",
     "de": "piper_de"
    },
    "engines": {
@@ -127,7 +127,19 @@
      }
     },
     "moss_cs": {
-     "unavailable": "MOSS běží přes MLX jen na Macu; verze pro PyTorch na CPU zatím není ověřená"
+     "python": "/home/user/mossenv/bin/python",
+     "worker": "workers/moss_torch_worker.py",
+     "job": {
+      "model": "OpenMOSS-Team/MOSS-TTS-Local-Transformer-v1.5",
+      "max_new_tokens": 1500,
+      "threads": 4,
+      "seed": 7
+     },
+     "env": {
+      "HF_HOME": "/home/user/hf"
+     },
+     "license": "Apache-2.0 (MOSS-TTS weights + code)",
+     "unavailable": null
     },
     "qwen_de": {
      "python": "{venv}/bin/python",

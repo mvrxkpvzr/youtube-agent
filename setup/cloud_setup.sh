@@ -10,6 +10,11 @@ mkdir -p "$ROOT/hf" "$ROOT/voices"
 [ -x "$VENV/bin/python" ] || uv venv -q --python 3.12 "$VENV"
 uv pip install -q --python "$VENV/bin/python" -r "$HERE/requirements.cloud.txt"
 echo "env ok: $VENV ($("$VENV/bin/python" -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())'))"
+# Czech voice (MOSS, ~3 GB of packages). Weights (17 GB) download to /home/user/hf on first use:
+# local disk only. Copying them into the shared folder filled the disk and crashed the container once.
+MV=/home/user/mossenv
+[ -x "$MV/bin/python" ] || uv venv -q --python 3.12 "$MV"
+uv pip install -q --python "$MV/bin/python" -r "$HERE/requirements.moss.txt" && echo "moss env ok: $MV"
 # Piper voices and Whisper come from huggingface.co, Blender from download.blender.org.
 # Both hosts must be allowed in the cloud environment's network settings.
 for v in cs_CZ-jirka-medium de_DE-thorsten-high; do

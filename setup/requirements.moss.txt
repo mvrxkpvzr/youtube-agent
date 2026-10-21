@@ -1,0 +1,12 @@
+# Czech voice MOSS-TTS-Local v1.5 on CPU (workers/moss_torch_worker.py). Separate env: pinned torch/transformers.
+torch==2.7.0
+torchaudio==2.7.0
+transformers==4.57.1
+accelerate
+safetensors
+soundfile
+numpy
+librosa
+einops
+pedalboard
+huggingface_hub
