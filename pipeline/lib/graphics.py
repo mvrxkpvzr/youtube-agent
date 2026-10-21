@@ -91,9 +91,9 @@ def card(template, params, source_text, seed=0, photo=None):
     elif template == "timeline":
         items, hi = params["items"], params.get("highlight", len(params["items"]) - 1)
         y = H * 0.55; x0, x1 = M, W - M; d.line([(x0, y), (x1, y)], fill=B["line"], width=6 * SS)
-        step = (x1 - x0) / max(len(items) - 1, 1)
+        step = (x1 - x0) / len(items)  # one slot per item, point in its centre: edge labels stay inside the frame
         for i, it in enumerate(items):
-            x = x0 + i * step; on = i == hi; r = (22 if on else 12) * SS
+            x = x0 + (i + 0.5) * step; on = i == hi; r = (22 if on else 12) * SS
             d.ellipse([x - r, y - r, x + r, y + r], fill=B["accent"] if on else B["muted"])
             d.text((x, y - 70 * SS), it["date"], font=font(44 if on else 34, "Bold"), fill=B["text"] if on else B["muted"], anchor="ms")
             f, lines = fit_text(d, it["label"], step * 0.9, 30, "Regular", 3)

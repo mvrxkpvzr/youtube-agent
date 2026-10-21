@@ -122,7 +122,7 @@ def render(proj, lang, preview=True):
     fc = (";".join(parts) if parts else "[0:v]null[v0]") + f";[{len(clips)}:a]apad[a]"
     run([ff, "-y", "-hide_banner", "-loglevel", "error", *inputs, "-i", str(audio), "-filter_complex", fc,
          "-map", last if parts else "[v0]", "-map", "[a]", "-c:v", "libx264", "-preset", "veryfast" if preview else "slow",
-         "-crf", "20" if preview else "16", "-pix_fmt", "yuv420p", "-r", str(fps), "-c:a", "aac", "-b:a", "256k", "-ar", "48000",
+         "-crf", "20" if preview else "16", "-maxrate", "12M", "-bufsize", "24M", "-pix_fmt", "yuv420p", "-r", str(fps), "-c:a", "aac", "-b:a", "256k", "-ar", "48000",
          "-movflags", "+faststart", "-t", f"{total:.3f}", str(final)])
     update_state(proj, f"render_{lang}", "done", inputs=[proj / f"shotlist.{lang}.json", proj / "audio" / lang / "narration.wav"],
                  outputs=[final], shots=len(shots))
