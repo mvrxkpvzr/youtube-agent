@@ -164,15 +164,12 @@ def auction(out, p):
             d.text(((X0 + 310 * SS), (Y0 + Y1) / 2 + 110 * SS), p.get("item_sub", "značka a práva"), font=font(30, "Regular"), fill=MUTED, anchor="mm")
             tx = X0 + 640 * SS
             d.text((tx, Y0 + 160 * SS), p.get("item", "Značka FYRE"), font=font(60), fill=TEXT, anchor="ls")
-            d.text((tx, Y0 + 250 * SS), "Aktuální nabídka", font=font(34, "Regular"), fill=MUTED, anchor="ls")
+            d.text((tx, Y0 + 250 * SS), "Konečná cena" if u >= 0.999 else "Aktuální nabídka", font=font(34, "Regular"), fill=MUTED, anchor="ls")
             d.text((tx, Y0 + 400 * SS), money(p["final"] * u), font=font(130), fill=ACCENT, anchor="ls")
-            nb = int(round(p["bidders"] * u))
-            d.text((tx, Y0 + 500 * SS), f"{nb} přihazujících", font=font(46, "SemiBold"), fill=TEXT, anchor="ls")
-            # progress bar = time left
-            d.rounded_rectangle([tx, Y0 + 580 * SS, X1 - 80 * SS, Y0 + 600 * SS], 10 * SS, fill=(18, 24, 36))
-            d.rounded_rectangle([tx, Y0 + 580 * SS, tx + (X1 - 80 * SS - tx) * max(0.02, 1 - u), Y0 + 600 * SS], 10 * SS, fill=ACCENT)
-            if u >= 0.999:
-                d.text((tx, Y0 + 680 * SS), "Konečná cena", font=font(40, "SemiBold"), fill=TEXT, anchor="ls")
+            if u >= 0.999:   # only the sourced final values are shown; no invented in-between bidder counts
+                al = min(1, (t - split * 0.85) / 0.4)
+                d.text((tx, Y0 + 500 * SS), f"{p['bidders']} přihazujících", font=font(46, "SemiBold"),
+                       fill=tuple(int(c * al + b * (1 - al)) for c, b in zip(TEXT, (24, 32, 48))), anchor="ls")
         else:
             u = ease(min(1, (t - split) / 2.2)); bars = [b + [None] * (3 - len(b)) for b in p["bars"]]; (v1, l1, _), (v2, l2, _) = bars
             base = 900 * SS; top = 150 * SS; full = base - top; scale = full / max(v1, v2)
