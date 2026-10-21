@@ -18,9 +18,9 @@ def probe_duration(f):
     r = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(f)], capture_output=True, text=True)
     return float(r.stdout.strip() or 0)
 
-def shots_from_edl(edl):
-    d = json.loads(edl.read_text(encoding="utf-8"))
-    return [{"scene": s.get("scene"), "template": s.get("template"), "dur": float(s["dur_s"]), "asset_file": s.get("file"),
+def shots_from_edl(edl, proj):
+    d = json.loads(edl.read_text(encoding="utf-8"))   # its file paths are relative to the project
+    return [{"scene": s.get("scene"), "template": s.get("template"), "dur": float(s["dur_s"]), "asset_file": str(proj / s["file"]) if s.get("file") else None,
              "asset_id": s.get("asset_id"), "license": s.get("license"), "text": s.get("text"), "narration": s.get("narration"),
              "source": s.get("on_screen_source")} for s in d["shots"]], "edl"
 
@@ -40,7 +40,7 @@ def tr(start, dur, fps): return otio.opentime.TimeRange(rt(start, fps), rt(dur, 
 def build(proj, lang, video):
     fps = 25.0; vdur = probe_duration(video)
     edl = proj / "render" / f"edl.{lang}.json"
-    shots, origin = shots_from_edl(edl) if edl.exists() else shots_from_plan(proj, lang)
+    shots, origin = shots_from_edl(edl, proj) if edl.exists() else shots_from_plan(proj, lang)
     sl = json.loads((proj / f"shotlist.{lang}.json").read_text(encoding="utf-8"))
     fps = float(sl.get("fps", fps)); narration = {sc["id"]: sc.get("narration", "") for sc in sl["scenes"]}
     tl = otio.schema.Timeline(name=f"{proj.name} ({lang})"); tl.global_start_time = rt(0, fps)

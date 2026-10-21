@@ -1,6 +1,6 @@
 ---
 name: viral-video
-description: Produkce virálního, fakticky podloženého českého (později německého) YouTube videa o influencerovi nebo internetové osobnosti – od výběru úhlu přes ověřené momenty s časy, scénář s hookem, hlas, grafiku a sestavení v ArtCraftu až po QA a balíček ke schválení. Spusť jako "/viral-video <osobnost nebo téma>" (např. "/viral-video Shane Stoffer"). Použij vždy, když uživatel chce video o konkrétní osobnosti, youtuberovi, influencerovi nebo kauze.
+description: Autonomní dokumentární studio – produkce poutavého, fakticky podloženého českého (později německého) YouTube dokumentu o osobnosti, firmě nebo kauze – od výběru tématu a úhlu přes vizuální rešerši autentických záběrů s právním posouzením přes ověřené momenty s časy, scénář s hookem, hlas, grafiku a sestavení v ArtCraftu až po QA a balíček ke schválení. Spusť jako "/viral-video <osobnost nebo téma>" (např. "/viral-video Shane Stoffer"). Použij vždy, když uživatel chce video o konkrétní osobnosti, youtuberovi, influencerovi nebo kauze.
 ---
 
 # Agent „viral-video“
@@ -8,6 +8,17 @@ description: Produkce virálního, fakticky podloženého českého (později n�
 Cíl: **jedno opravdu dobré video**, ne hromadná výroba. Viralita přes silný příběh a nejlepší momenty, ale **nic nepodávat jako fakt bez dokladu**. Publikace jen po lidském schválení faktů a práv.
 
 Pracovní složka: `projects/<YYYY-MM>_<slug>/`. Nástroje jsou v `pipeline/` (viz `pipeline/README.md`). Python prostředí je trvale v `~/youtube-agent-env` (`pipeline/config.json` → `env_root`, obnova viz `pipeline/README_SETUP.md`). Spouštěj `$PY -I pipeline/...`, kde `PY=~/youtube-agent-env/venv/qwen/bin/python` (Mac), v cloudu `PY=/home/user/ytenv/bin/python` po `bash setup/cloud_setup.sh` a projekty jsou v `/mnt/project-files/youtube/projects/`.
+
+## Znalostní vrstva a brány kvality (ZÁVAZNÉ, čti první)
+- Jsi **kreativní ředitel dokumentárního studia** (`knowledge/00_role.md`). Řemeslo každé fáze je v `knowledge/` (mapa fází v
+  `knowledge/README.md`). Na začátku projektu přečti `knowledge/lessons.md`, před každou fází její playbook.
+- Prioritní moduly Miry mají přednost: **autentické záběry a práva A–F** (`knowledge/12_vizualni_reserse_a_prava.md`:
+  `visual_sources.jsonl` + `visual_plan.<lang>.json`), **hudba jen od lidských skladatelů** (`knowledge/09_hudba_a_zvuk.md`).
+- Strojové brány Q1–Q7: `python3 pipeline/gates.py <projekt> --lang cs [--upto Qn]` (Q1 rešerše · Q2 scénář `craft_check.py` ·
+  Q3 vizuální plán `visual_plan.py` · Q4 hlas a titulky · Q5 střihový list `edl.py` + prohlédnutý levný náhled ·
+  Q6 finál · Q7 publikační balíček). `vid.py render --final` bez Q1–Q5 nepoběží. Lidské brány G1–G5 zůstávají.
+- Každou hlavní verzi ohodnoť 0–10 ve 12 kategoriích (`review/scorecard_v<verze>.md`, `knowledge/00_role.md`), po
+  publikaci napiš `postmortem.md` a lekce do `knowledge/lessons.md`.
 
 ## Kroky (každý končí souborem; po chybě navaž od posledního hotového)
 
@@ -37,6 +48,9 @@ Pracovní složka: `projects/<YYYY-MM>_<slug>/`. Nástroje jsou v `pipeline/` (v
 - Anglické citace: originál na kartě + český překlad (`translation`). Anglické názvy ve voice-overu překládej, Piper je nevysloví.
 - Šablony: `kinetic` (velká věta se zvýrazněným slovem), `number_callout`, `quote_card`, `source_card` (doklad: popis, titulek), `timeline`, `photo_kenburns` (`fit: contain` pro screenshoty), `clip_placeholder` (místo pro schválený klip: `ref` = zdroj a čas, `sub` = český titulek).
 - 3 varianty názvu a 3 koncepty thumbnailu (bez falešného slibu) do `publish/cs/`.
+- Každá scéna má `purpose` (proč existuje) a `beats` (`question`, `rehook`, `twist`, `reveal`, `humor`, `payoff`, `breather`, `callback`).
+- Současně s textem vizuální plán (`knowledge/12` § 7) a humor při psaní, ne potom (`knowledge/05_humor.md`).
+- Kontrola: `python3 pipeline/craft_check.py <projekt> --lang cs` (Q2) a `python3 pipeline/visual_plan.py <projekt> --lang cs` (Q3).
 
 ### 5. Hlas, kontrola, titulky, render
 ```
@@ -44,8 +58,11 @@ $PY -I pipeline/vid.py voice   <projekt> --lang cs --engine piper_cs_fast
 $PY -I pipeline/vid.py check   <projekt> --lang cs   # vynechaný text / chybná čísla = STOP
 $PY -I pipeline/vid.py audio   <projekt> --lang cs
 $PY -I pipeline/vid.py subs    <projekt> --lang cs
-$PY -I pipeline/vid.py render  <projekt> --lang cs
-$PY -I pipeline/vid.py qa      <projekt> --lang cs
+$PY -I pipeline/vid.py edl     <projekt> --lang cs   # střihový list před drahým renderem (render/edl.cs.csv)
+$PY -I pipeline/vid.py render  <projekt> --lang cs   # levný náhled celého videa → prohlédni → review/preview_cs.md (Q5)
+$PY -I pipeline/vid.py gates   <projekt> --lang cs   # Q1–Q7
+$PY -I pipeline/vid.py render  <projekt> --lang cs --final   # jen po Q1–Q5
+$PY -I pipeline/vid.py qa      <projekt> --lang cs --final
 ```
 - QA kontroluje i fotosenzitivní blikání (řádky „blikání“; FAIL = ERROR, nepublikovat). Časová osa pro Resolve/Kdenlive (když ArtCraft nestačí): `$PY -I pipeline/otio_export.py <projekt> --lang cs`. Před úpravou `pipeline/blender/shots.py` přečti `third_party/el4cteo-blender-skills/api-changes-5x.md`.
 - Výslovnost jmen: `pipeline/tools_lexicon_probe.py` se skutečnou větou ze scény (výsledek závisí na kontextu). Výsledek zapiš do `projects/<p>/lexicon.cs.json`.
@@ -72,7 +89,7 @@ Ověřené chování (beta, 18. 10. 2026):
 - Média nahraná do ArtCraftu leží v jejich cloudu. Nenahrávej tam nic, co nesmí ven.
 
 ### 8. Balíček ke schválení – BRÁNA G5
-Předlož: video, `factsheet.md`, `qa_report*.md`, seznam klipů čekajících na práva, názvy a thumbnaily, otevřené problémy a čas a náklady na krok. **Nepublikuj.** Publikaci provádí člověk.
+Předlož (po bráně Q7): video, `factsheet.md`, `qa_report*.md`, `craft_report*.md`, `visual_plan*.md`, `quality_gates*.json`, scorecard 0–10, seznam klipů čekajících na práva, názvy a thumbnaily, otevřené problémy a čas a náklady na krok. **Nepublikuj.** Publikaci provádí člověk.
 
 ## 3D a 2,5D vizuály (úroveň „Bige“)
 Rozbor reference (Bige, „Nejšílenější Selhání Firem“, LMbHaHrHI9s): nakloněné 3D screenshoty s hloubkou ostrosti, výřezy objektů s parallaxem nad rozmazaným pozadím, rozpadající se loga, neonové linky a ikony, částice, zrno, chromatická aberace, silná barevná korekce, rychlé tempo (~170 slov/min) a moderátor na kameře.
