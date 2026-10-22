@@ -5,6 +5,14 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 PIPE = Path(__file__).resolve().parents[1]
 B = json.loads((PIPE / "brand" / "brand.json").read_text())
+
+def apply_project_brand(proj):
+    """Per-project colour override: <project>/brand.json (e.g. {"bg": "#050507"}) is laid over brand/brand.json in place,
+    so every module holding B sees it. Only colours; size, fps and font stay global. Returns the keys applied."""
+    p = Path(proj) / "brand.json"
+    if not p.exists(): return []
+    o = {k: v for k, v in json.loads(p.read_text()).items() if k in ("bg", "bg2", "text", "muted", "accent", "line")}
+    B.update(o); return sorted(o)
 SS = B["supersample"]; W, H = B["w"] * SS, B["h"] * SS
 
 def font(size, weight="Regular"):

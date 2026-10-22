@@ -53,6 +53,8 @@ def main():
     if a.cmd in ("craft", "visual", "edl", "gates"):
         script = {"craft": "craft_check.py", "visual": "visual_plan.py", "edl": "edl.py", "gates": "gates.py"}[a.cmd]
         sys.exit(subprocess.run([sys.executable, str(Path(__file__).parent / script), str(proj), "--lang", a.lang]).returncode)
+    from lib.graphics import apply_project_brand
+    if (keys := apply_project_brand(proj)): print(f"  brand.json projektu: {', '.join(keys)}")
     cmds = ["voice", "check", "audio", "subs", "mix", "render", "qa"] if a.cmd == "all" else [a.cmd]
     for c in cmds:
         if c == "voice":
