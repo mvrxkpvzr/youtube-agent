@@ -1,28 +1,33 @@
 # Protokol analýzy jednoho videa
 
-Vstup: URL videa z `sample_plan.md`. Nástroj: Claude in Chrome (cloud ani počítač YouTube nepustí).
+Vstup: URL videa z `sample_plan.md`. Nástroj: Claude in Chrome v uživatelově prohlížeči (cloud YouTube nepustí).
+Nic se nestahuje ani neukládá: titulky a snímky jsou jen v paměti stránky a do knihovny jdou vlastní poznámky.
 
-1. Otevřít `https://www.youtube.com/watch?v=<id>` a spustit `tools/extract_watch.js` (javascript_tool).
-   Výstup: metadata (název, datum, délka), kapitoly z popisu, titulky s časy, odhad střihů ze storyboardu.
-   Výstup se **neukládá do repa** (titulky jsou cizí text); zpracovává se jen do vlastních poznámek.
-2. Prohlédnout storyboard (mřížka náhledů) a zařadit vizuální kategorie po úsecích:
-   archival-video, archival-photo, document/screenshot, news-headline, map, chart/graph, motion-graphics-text,
-   3d, original-animation/illustration, stock, talking-head, b-roll-original.
-3. Přehrát v přehrávači minimálně: 0:00–1:30 (hook a slib), přechod do 2. aktu, hlavní odhalení, posledních 90 s.
-   U těchto úseků ručně spočítat střihy a popsat hlas, hudbu, ambient, ticho, přechody (`source=player`, `confidence=high`).
-4. Náhled: otevřít `https://i.ytimg.com/vi/<id>/maxresdefault.jpg`, popsat kompozici (počet prvků, tvář/objekt,
-   text v náhledu, kontrast, vztah k názvu: opakuje / doplňuje / vytváří otázku).
-5. Zapsat do `videos.jsonl` jeden řádek (pole níže) a do `observations.jsonl` časově ukotvené záznamy:
-   každé z 10 témat zadání aspoň jedno pozorování; interpretace zvlášť.
-6. Nově rozpoznanou obecnou techniku přidat do `techniques.md` (TQ-nn) s odkazy na pozorování, která ji dokládají
-   (min. 2 kanály, jinak označit „jen 1 kanál“).
-7. `python3 search.py --check` musí projít.
+1. Otevřít `https://www.youtube.com/watch?v=<id>` a počkat na načtení.
+2. Celý soubor `tools/run_watch.js` vložit **jako text** do `javascript_tool` (stránka blokuje `eval` uložené kopie
+   přes Trusted Types; obcházení této ochrany nezkoušet). Ve stejném `browser_batch` přečíst `get_page_text`.
+   - Výstup A (hned): metadata, slova a tempo řeči (WPM), mezery ve vyprávění ≥3 s, přepis po 20s blocích v `#__ov`.
+     U dlouhých videí zkrátit `#__ov` na hlavičku + bloky do 200 s, posledních ~200 s a každý k-tý blok (k = bloky/30).
+   - Výstup B (na pozadí, `window.__B`): kontaktní listy (40 snímků celého videa + 30 snímků prvních 90 s), náhled,
+     odhad střihů a hladiny zvuku ve 3 oknech (začátek, střed, konec).
+3. Dotazovat `window.__B.status` po jednom volání (smyčka max. 14 × 2,5 s; `browser_batch` má limit 60 s celkem).
+   Při `done` zobrazit `#__vis` a udělat snímek obrazovky (náhled + kontaktní listy), přečíst `window.__B.windows`.
+4. Zapsat do `videos.jsonl` jeden řádek a do `observations.jsonl` časově ukotvené záznamy: každé z 10 témat zadání
+   aspoň jedno pozorování; interpretace jako samostatné záznamy (`kind=interpretation`).
+5. Obecnou techniku doložit v `techniques.md` (TQ-nn) odkazy na pozorování (min. 2 kanály, jinak to napsat).
+6. `python3 search.py --check` musí projít (kontroluje i to, že TQ cituje existující O-id).
+
+## Známé meze měření
+- Střihy: rozdíl barevného histogramu mezi snímky při 4× rychlosti; plynulé 3D pohyby a posuny ve fotkách
+  podhodnocuje. Je to orientační srovnání mezi kanály, ne přesný počet.
+- Zvuk: medián RMS v dB z Web Audio při hlasitosti přehrávače; relativní srovnání, ne LUFS.
+- Kapitoly z popisu skript nenačte; zapisují se ručně z přehrávače.
+- Kanály jen s automatickými titulky (např. Barely Sociable) mají přepis bez velkých písmen a interpunkce.
 
 ## Pole `videos.jsonl`
 `id` (V-<slug>-NN), `channel`, `title`, `url`, `published` (YYYY-MM-DD), `runtime_s`, `selection_reason`,
 `topic`, `narrative_question`, `hook` {`t_end`, `summary`, `promise`}, `structure` [{`t`, `beat`}], `revelations` [..],
-`payoff`, `visual` {`cuts_est`, `cuts_per_min`, `method`, `categories` {kategorie: podíl 0–1}},
-`archival_maps_graphics_3d` (text), `audio` {`voice`, `music`, `ambience`, `silence`, `transitions`},
-`evidence` (jak jsou tvrzení doložena na obrazovce), `thumbnail` {`composition`, `title_relation`},
-`works` [..], `improve` [..], `transfer` [..], `techniques` [TQ-nn], `analysed_via` [transcript|player|storyboard|thumbnail],
+`payoff`, `visual` {`cuts_per_min`, `method`, `categories`}, `archival_maps_graphics_3d` (text),
+`audio` {`voice`, `music`, `ambience`, `silence`, `transitions`}, `evidence`, `thumbnail` {`composition`, `title_relation`},
+`works` [..], `improve` [..], `transfer` [..], `techniques` [TQ-nn], `analysed_via` [transcript|player|thumbnail],
 `confidence`, `analysed_at`.

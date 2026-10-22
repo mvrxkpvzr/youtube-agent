@@ -1,15 +1,12 @@
-# Kde jsme skončili (2026-10-21)
+# Kde jsme skončili (2026-10-22)
 
-Hotovo: struktura knihovny, schéma pozorování, `search.py` (hledání + `--check`), extrakční skript pro Chrome,
-protokol analýzy, kritéria výběru a první kandidáti (`sample_plan.md`). Formát odsouhlasen s vláknem
-„Znalosti a schopnosti agenta“ (TQ-ID citují playbooky jako [Praxe]; rozpor s pravidlem playbooku → zpráva tomu vláknu).
+Hotovo: 26 videí (všech 15 kanálů ze zadání + 1 srovnávací video o Fyre), 462 pozorování a interpretací,
+katalog 29 technik (`techniques.md`), doporučení pro pilot (`recommendation_fyre.md`). `search.py --check` prochází.
+Doporučení předáno vláknu „Struktura agenta a pilot Fyre Festival“ (v1.3); TQ-ID předána vláknu „Znalosti
+a schopnosti agenta“ (cituje je jako [Praxe]).
 
-Blokováno: YouTube je z cloudu i z počítače blokované (proxy 403); rozšíření Claude in Chrome hlásilo
-„Could not verify this site's safety category“ i pro example.com a pak se odpojilo. Mira připojí Chrome zítra.
-
-Další kroky:
-1. Krok 0 v `sample_plan.md`: ověřit handle kanálů a vybrat 2–3 videa na kanál.
-2. Ověřit, že `tools/extract_watch.js` na watch stránce vrací titulky a storyboard (fetch titulků může vyžadovat
-   jiný postup; záložně otevřít panel „Přepis“ a číst DOM).
-3. Analýza podle `protocol.md`, průběžně `search.py --check`.
-4. `techniques.md` a `recommendation_fyre.md`; doporučení poslat vláknu „Struktura agenta a pilot Fyre Festival“ (v1.3).
+Otevřené:
+- Tvrzení ze srovnávacího videa (seznam v `recommendation_fyre.md`) ověřit z primárních zdrojů v rešerši pilotu.
+- Pole `techniques` u videí a pozorování zatím nevyplněné; vazba vede z `techniques.md` na O-id.
+- Druhá videa u 5 kanálů vynechána (viz `sample_plan.md`); doplnit jen pro konkrétní otázku.
+- Po vydání pilotu změřit náš střih stejným nástrojem (`tools/run_watch.js`) a porovnat s tabulkou v doporučení.

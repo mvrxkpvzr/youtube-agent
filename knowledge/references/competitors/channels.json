@@ -1,17 +1,18 @@
 [
   {"slug": "magnates", "name": "MagnatesMedia", "handle": "@MagnatesMedia", "study_focus": "business rise-and-fall storytelling"},
   {"slug": "coldfusion", "name": "ColdFusion", "handle": "@ColdFusion", "study_focus": "calm cinematic technology and business documentaries"},
-  {"slug": "companyman", "name": "Company Man", "handle": "@CompanyMan", "study_focus": "company case-study structure"},
+  {"slug": "companyman", "name": "Company Man", "handle": "@companyman114", "study_focus": "company case-study structure"},
   {"slug": "fern", "name": "Fern", "handle": "@Fern-TV", "study_focus": "faceless visual identity and documentary pacing"},
   {"slug": "wendover", "name": "Wendover Productions", "handle": "@Wendoverproductions", "study_focus": "maps, logistics and systems explanation"},
-  {"slug": "neo", "name": "neo", "handle": "@neo", "study_focus": "visual storytelling and 3D explainers"},
-  {"slug": "realeng", "name": "Real Engineering", "handle": "@RealEngineering", "study_focus": "technical visualizations"},
+  {"slug": "neo", "name": "neo", "handle": "@neoexplains", "study_focus": "visual storytelling and 3D explainers"},
+  {"slug": "realengineering", "name": "Real Engineering", "handle": "@RealEngineering", "study_focus": "technical visualizations"},
   {"slug": "polymatter", "name": "PolyMatter", "handle": "@PolyMatter", "study_focus": "charts and economic/geopolitical explanations"},
   {"slug": "lemmino", "name": "LEMMiNO", "handle": "@LEMMiNO", "study_focus": "research depth, narrative structure and visual precision"},
   {"slug": "barelysociable", "name": "Barely Sociable", "handle": "@BarelySociable", "study_focus": "investigative research"},
   {"slug": "nexpo", "name": "Nexpo", "handle": "@Nexpo", "study_focus": "sound design and suspense"},
   {"slug": "fascinatinghorror", "name": "Fascinating Horror", "handle": "@FascinatingHorror", "study_focus": "chronological disaster storytelling"},
-  {"slug": "hai", "name": "Half as Interesting", "handle": "@halfasinteresting", "study_focus": "concise hooks and humor"},
+  {"slug": "halfasinteresting", "name": "Half as Interesting", "handle": "@halfasinteresting", "study_focus": "concise hooks and humor"},
   {"slug": "modernmba", "name": "Modern MBA", "handle": "@ModernMBA", "study_focus": "business model analysis"},
-  {"slug": "businesscasual", "name": "Business Casual", "handle": "@BusinessCasual", "study_focus": "corporate history"}
+  {"slug": "businesscasual", "name": "Business Casual", "handle": "@BusinessCasual", "study_focus": "corporate history"},
+  {"slug": "internethistorian", "name": "Internet Historian", "handle": "@InternetHistorian", "study_focus": "comparator only: same topic (Fyre Festival), comic treatment; not one of the 15 studied channels", "comparator": true}
 ]

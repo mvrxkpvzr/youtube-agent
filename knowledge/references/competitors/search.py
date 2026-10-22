@@ -86,6 +86,11 @@ def check(videos, obs, tq):
         for t in o.get("techniques", []):
             if t not in tq:
                 errs.append(f"{oid}: unknown technique {t}")
+    oids = {o.get("id") for o in obs}
+    for t in tq.values():
+        for ref in sorted(set(re.findall(r"\bO\d{4}\b", t["body"]))):
+            if ref not in oids:
+                errs.append(f"{t['id']}: cites unknown observation {ref}")
     per_video = {}
     for o in obs:
         per_video.setdefault(o.get("video"), set()).add(o.get("kind"))
