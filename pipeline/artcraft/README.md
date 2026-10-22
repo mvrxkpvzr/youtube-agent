@@ -1,11 +1,11 @@
-# ArtCraft ve střihu (stav k 21. 10. 2026)
+# ArtCraft ve střihu (stav k 22. 10. 2026)
 
 Agent stříhá a exportuje video v **editoru ArtCraftu** sám, bez obsluhy. Ověřený postup i výsledek testu jsou níže.
 
 ## Co ArtCraft nabízí a co z toho jde automatizovat (ověřeno ze zdrojového kódu)
 
 ArtCraft je open source (MIT nebo Apache-2.0, github.com/storytold/artcraft). Web app.getartcraft.com je z cloudu
-nedostupný (proxy ho blokuje), proto jsem vycházel ze zdrojového kódu.
+nedostupný (proxy ho blokuje), proto jsem vycházel ze zdrojového kódu; online aplikaci jsem ověřil zvlášť v Chromu (níže).
 
 | Funkce | Co to je | Automatizace |
 |---|---|---|
@@ -88,7 +88,25 @@ odmítne (`tests/test_verify_export.py` totéž na syntetickém videu). Výstupy
 - Open-source Chromium neumí H.264: v cloudu proto záběry i export používají VP9/Opus (WebM) a mp4 dělá až master.
 - Headless Chromium neumí přečíst WebGPU plátno (export vyjde černý). Proto běží „s oknem“ ve virtuálním displeji Xvfb.
 - Editor nemá přechody jako hotové efekty; prolínání je skládáno z průhlednosti dvou stop (výsledek je stejný).
-- Online aplikace app.getartcraft.com na účtu uživatele zatím ověřená není (nešel připojit Chrome). Projekt z ní
-  nelze načíst ani do ní nahrát souborem; v ní jde jen ručně dolaďovat.
+- Online aplikaci nejde ovládat z pipeline (viz níže); slouží jen k ručnímu doladění.
+
+## Online aplikace app.getartcraft.com (ověřeno v Chromu uživatele 22. 10. 2026)
+
+Test v novém prázdném projektu, bez kreditů (zůstatek 0 před i po), existující projekty beze změny:
+
+- Editor je stejný (OpenCut) jako knihovna, kterou používá pipeline: média, časová osa, text, export MP4 (H.264)
+  nebo WebM (VP9), kvalita, zvuk, cíl „uložit na disk“ a/nebo „do mé knihovny“.
+- **Projekty se ukládají na server** ArtCraftu: po prvním vložení klipu se adresa změní z `local-…` na `m_…`.
+  Seznam projektů čte aplikace přes interní API `api.storyteller.ai`, které nepoužíváme.
+- **Každý nahraný soubor jde do knihovny médií na účtu** (`uploadLocalFile`). WebM aplikace odmítá
+  („unpermitted mime type: video/webm“), MP4 přijme.
+- Vložení na osu přes tlačítko „+“ u média; přetažení myší z automatizace nefunguje. Text přidaný „+“ má výchozí
+  délku 5 s a prodlouží video. Velikost plátna převezme první klip (3s testovací klip 640×360 → export 640×360).
+- Export běží v prohlížeči, kredity nespotřebuje. Výsledek testu: MP4 (`ftypisom`), 640×360, 5,085 s, H.264 + zvuk
+  2 kanály, celý se přehrál; snímky v 0,2 / 1 / 2 / 2,9 s mají barvy zdrojového klipu, text je v obraze i po jeho
+  konci. Ověřeno v prohlížeči (soubor zachycen v paměti stránky, nic se nestáhlo).
+- Žádné veřejné API, žádný import projektu ze souboru. Automatizace by znamenala klikat v cizím webu přihlášeného
+  uživatele, závislá na jeho rozložení a s nahráváním do jeho knihovny. Proto pipeline používá knihovnu editoru
+  lokálně (výše) a online aplikace zůstává na ruční úpravy hotového MP4.
 
 Původní cesta (`vid.py render`, čisté FFmpeg) zůstává jako záloha, když editor není k dispozici.
