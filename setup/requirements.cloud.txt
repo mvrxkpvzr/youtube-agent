@@ -12,3 +12,5 @@ imageio-ffmpeg
 pedalboard
 faster-whisper
 piper-tts
+opentimelineio            # Apache-2.0, portable timeline export (otio_export.py)
+otio-cmx3600-adapter      # Apache-2.0, CMX 3600 EDL writer for OpenTimelineIO
