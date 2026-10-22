@@ -37,6 +37,7 @@ def word_value(w):
     if m: return ("unit", _UNIT_OF[m[1]] + WORDS[m[2]][1])
     m = re.fullmatch(_COMP + r"(dvacát|třicát)" + _ORD_SUF, w)
     if m: return ("ord", _UNIT_OF[m[1]] + {"dvacát": 20, "třicát": 30}[m[2]])
+    if re.fullmatch(r"prvn(?:í|ího|ímu|ím|ími|ích)", w): return ("ord", 1)
     for v, stem in _ORD.items():
         if re.fullmatch(stem + _ORD_SUF, w): return ("ord", v)
     return None
@@ -60,17 +61,21 @@ def collapse(tokens, payloads=None, merge=lambda a, b: a):
             v = round(total + cur, 6); out.append(str(int(v)) if v == int(v) else str(v)); outp.append(p_acc)
         total = cur = 0; last = None; start = None; p_acc = None; last_val = 0
 
-    i = -1
+    i = -1; last_ord = None
     while i + 1 < len(toks):
         i += 1; t, p = toks[i], pays[i]
         if start is not None and last in ("unit", "ten") and t == "a" and toks[i + 1:i + 2] == ["půl"]:
             cur += 0.5; p_acc = merge(p_acc, pays[i + 1]); i += 1; last = "half"; continue  # "dva a půl tisíce"
         wv = word_value(t)
         if wv is None:
-            flush(); out.append(t); outp.append(p); continue
+            flush(); out.append(t); outp.append(p); last_ord = None; continue
         kind, v = wv
         if kind == "ord":
-            flush(); out.append(str(v)); outp.append(p); continue
+            flush()
+            if out and last_ord and last_ord % 10 == 0 and last_ord >= 20 and v < 10:   # "dvacátého osmého" -> 28
+                out[-1] = str(last_ord + v); outp[-1] = merge(outp[-1], p); last_ord = None; continue
+            out.append(str(v)); outp.append(p); last_ord = v; continue
+        last_ord = None
         if kind == "num":
             flush(); start = i; p_acc = p; cur = v; last = "unit"; last_val = v; continue
         ok = start is not None

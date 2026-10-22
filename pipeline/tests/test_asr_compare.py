@@ -19,8 +19,10 @@ assert not any("vynechaný" in e for e in r["errors"]), r
 for ref, hyp in [("vrátit dvacet šest milionů sto devadesát jedna tisíc tři sta šest dolarů", "vrátit 26 191 306 dolarů"),
                  ("Konečná cena: dvě stě čtyřicet pět tisíc tři sta dolarů.", "Konečná cena – 245 300 dolarů."),
                  ("Jedenáctého října dva tisíce osmnáct dostane šest let.", "11. října 2018 dostane 6 let."),
-                 ("ukazoval dva a půl tisíce rezervací, zhruba jedno procento", "ukazoval 2,5 tisíce rezervací, zhruba 1%")]:
+                 ("ukazoval dva a půl tisíce rezervací, zhruba jedno procento", "ukazoval 2,5 tisíce rezervací, zhruba 1%"),
+                 ("Pátek dvacátého osmého dubna dva tisíce sedmnáct.", "Pátek 28. dubna 2017."),
+                 ("třicátého prvního května", "31. května")]:
     r = compare(ref, hyp); assert r["errors"] == [] and r["wer"] == 0, (ref, r)
 r = compare("vrátit dvacet šest milionů dolarů", "vrátit 25 milionů dolarů")
 assert any("26000000" in e for e in r["errors"]), r
-print("ok: 9 compare cases pass")
+print("ok: 11 compare cases pass")
