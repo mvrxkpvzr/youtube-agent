@@ -1,0 +1,87 @@
+// Combined step: run on a freshly loaded watch page. Returns transcript length; visual job continues in background (window.__B).
+(async () => {
+  const n = await (async () => {
+  const v = document.querySelector('video'); if (v) { v.muted = true; v.pause(); }
+  const pr = document.querySelector('#movie_player').getPlayerResponse();
+  const vd = pr.videoDetails, mf = pr.microformat?.playerMicroformatRenderer || {};
+  const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  const meta = { id: vd.videoId, title: vd.title, channel: vd.author, runtime_s: +vd.lengthSeconds, published: (mf.publishDate || '').slice(0, 10), views: +vd.viewCount };
+  // most replayed
+  let heat = [];
+  const walk = o => { if (!o || typeof o !== 'object') return; if (o.markerType === 'MARKER_TYPE_HEATMAP' && o.markers) { heat = o.markers; return; } for (const k in o) walk(o[k]); };
+  walk(window.ytInitialData);
+  const peaks = heat.map(m => [+m.startMillis / 1000, +m.intensityScoreNormalized]).filter((m, i, a) => i > 0 && i < a.length - 1 && m[1] >= a[i - 1][1] && m[1] >= a[i + 1][1] && m[1] > 0.35).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const early = heat.slice(0, 5).map(m => (+m.intensityScoreNormalized).toFixed(2));
+  // transcript
+  const btn = document.querySelector('ytd-video-description-transcript-section-renderer button');
+  let segs = [...document.querySelectorAll('transcript-segment-view-model, ytd-transcript-segment-renderer')];
+  if (btn && !segs.length) btn.click();
+  for (let i = 0; i < 20 && !segs.length; i++) { await new Promise(r => setTimeout(r, 700)); segs = [...document.querySelectorAll('transcript-segment-view-model, ytd-transcript-segment-renderer')]; }
+  const toS = t => t.split(':').reduce((a, b) => a * 60 + +b, 0);
+  const lines = segs.map(e => { const ts = e.querySelector('[class*="Timestamp"], .segment-timestamp')?.textContent.trim(); if (!ts || !/^\d+:\d+/.test(ts)) return null; const tx = [...e.querySelectorAll('span, .segment-text')].map(x => x.textContent).join(' ').replace(/\s+/g, ' ').trim() || e.textContent.replace(ts, '').trim(); return [toS(ts), tx.replace(/^\d+:\d+\s*/, '')]; }).filter((l, i, a) => l && a.findIndex(m => m && m[0] === l[0] && m[1] === l[1]) === i);
+  const chapters = [...document.querySelectorAll('[class*="SectionHeader"], ytd-transcript-section-header-renderer')].map(e => e.textContent.trim()).filter(Boolean);
+  // merge into ~20 s blocks; mark narration gaps >= 3 s
+  const blocks = []; let cur = null, gaps = [];
+  lines.forEach(([t, tx], i) => { if (i) { const pt = lines[i - 1][0]; const est = pt + lines[i - 1][1].split(' ').length / 2.6; if (t - est >= 3) gaps.push([Math.round(est), Math.round(t - est)]); } if (!cur || t - cur.t >= 20) { cur = { t, tx: [] }; blocks.push(cur); } cur.tx.push(tx); });
+  const words = lines.reduce((a, l) => a + l[1].split(' ').length, 0);
+  window.__A = { meta, peaks, early, chapters, n_lines: lines.length, words, wpm: Math.round(words / (meta.runtime_s / 60)), gaps };
+  const head = `${meta.title} | ${meta.channel} | ${meta.published} | ${fmt(meta.runtime_s)} | views ${meta.views}\nwords ${words}, wpm ${window.__A.wpm}, lines ${lines.length}\nchapters: ${chapters.join(' / ')}\nmost-replayed peaks: ${peaks.map(p => fmt(p[0]) + '=' + p[1].toFixed(2)).join(', ')}; first 5 buckets: ${early.join(' ')}\nnarration gaps>=3s: ${gaps.map(g => fmt(g[0]) + '(' + g[1] + 's)').join(', ')}\n---\n`;
+  const body = blocks.map(b => `[${fmt(b.t)}] ${b.tx.join(' ')}`).join('\n');
+  let art = document.getElementById('__ov'); if (!art) { art = document.createElement('article'); art.id = '__ov'; document.body.appendChild(art); }
+  art.textContent = head + body;
+  return head.length + body.length;
+})();
+  window.__B = { status: 'running' };
+  (async () => {
+    const B = window.__B, v = document.querySelector('video'), D = v.duration;
+    const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+    v.pause(); v.muted = true;
+    const seek = t => new Promise(r => { const f = () => { v.removeEventListener('seeked', f); setTimeout(r, 120); }; v.addEventListener('seeked', f); v.currentTime = t; });
+    const sheet = async (times, cols, label) => {
+      const W = 192, H = 108, rows = Math.ceil(times.length / cols);
+      const c = document.createElement('canvas'); c.width = W * cols; c.height = (H + 14) * rows; const x = c.getContext('2d');
+      x.fillStyle = '#000'; x.fillRect(0, 0, c.width, c.height); x.font = '12px sans-serif';
+      for (let i = 0; i < times.length; i++) { await seek(times[i]); const cx = (i % cols) * W, cy = Math.floor(i / cols) * (H + 14); x.drawImage(v, cx, cy + 14, W - 2, H - 2); x.fillStyle = '#ff0'; x.fillText(fmt(times[i]), cx + 2, cy + 11); }
+      c.title = label; return c;
+    };
+    try {
+      B.status = 'sheets';
+      const whole = await sheet(Array.from({ length: 40 }, (_, i) => Math.min(D - 1, 5 + i * (D - 10) / 39)), 10, 'whole');
+      const hook = await sheet(Array.from({ length: 30 }, (_, i) => 1 + i * 3), 10, 'hook 0-90s');
+      let ov = document.getElementById('__vis'); if (ov) ov.remove();
+      ov = document.createElement('div'); ov.id = '__vis';
+      ov.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#111;overflow:auto;padding:4px';
+      const th = new Image(); th.src = `https://i.ytimg.com/vi/${new URLSearchParams(location.search).get('v')}/maxresdefault.jpg`; th.style.cssText = 'width:400px;display:block;margin-bottom:4px';
+      [whole, hook].forEach(c => { c.style.cssText = 'width:100%;display:block;margin-bottom:4px'; });
+      ov.append(th, whole, hook); document.body.appendChild(ov); ov.style.display = 'none';
+      // audio graph (best effort)
+      let an = null;
+      try { const ac = new AudioContext(); const src = ac.createMediaElementSource(v); an = ac.createAnalyser(); an.fftSize = 2048; const g = ac.createGain(); g.gain.value = 0; src.connect(an); an.connect(g); g.connect(ac.destination); await Promise.race([ac.resume(), new Promise(r => setTimeout(r, 1500))]); B.audio_ctx = ac.state; v.muted = false; v.volume = 1; } catch (e) { B.audio_ctx = 'ERR ' + e; }
+      const buf = an ? new Float32Array(an.fftSize) : null;
+      const wins = [[0, 120], [D / 2 - 60, D / 2 + 60], [Math.max(0, D - 150), Math.max(0, D - 30)]];
+      const c = new OffscreenCanvas(64, 36), x = c.getContext('2d', { willReadFrequently: true });
+      B.windows = [];
+      for (const [a, b] of wins) {
+        B.status = `window ${fmt(a)}-${fmt(b)}`;
+        await seek(a); v.playbackRate = 4; await v.play();
+        let prev = null, lastCut = -9, cuts = [], dark = 0, n = 0, rms = [];
+        while (v.currentTime < b && !v.paused && !v.ended) {
+          x.drawImage(v, 0, 0, 64, 36); const d = x.getImageData(0, 0, 64, 36).data; const h = new Float32Array(48); let lum = 0;
+          for (let p = 0; p < d.length; p += 4) { h[d[p] >> 4]++; h[16 + (d[p + 1] >> 4)]++; h[32 + (d[p + 2] >> 4)]++; lum += d[p] + d[p + 1] + d[p + 2]; }
+          const N = d.length / 4; n++; if (lum / N / 765 < 0.05) dark++;
+          if (prev) { let s = 0; for (let k = 0; k < 48; k++) s += Math.abs(h[k] - prev[k]) / N; s /= 3; const t = v.currentTime; if (s > 0.5 && t - lastCut > 0.6) { cuts.push(+t.toFixed(1)); lastCut = t; } }
+          prev = h;
+          if (an) { an.getFloatTimeDomainData(buf); let q = 0; for (const s of buf) q += s * s; rms.push(10 * Math.log10(q / buf.length + 1e-10)); }
+          await new Promise(r => setTimeout(r, 50));
+        }
+        v.pause();
+        const span = Math.max(1, Math.min(b, v.currentTime) - a);
+        const st = rms.length ? { db_med: +rms.slice().sort((p, q) => p - q)[rms.length >> 1].toFixed(1), quiet_pct: Math.round(100 * rms.filter(r => r < -45).length / rms.length), db_p90: +rms.slice().sort((p, q) => p - q)[Math.floor(rms.length * 0.9)].toFixed(1) } : null;
+        B.windows.push({ win: `${fmt(a)}-${fmt(b)}`, cuts: cuts.length, cuts_per_min: +(cuts.length / span * 60).toFixed(1), avg_shot_s: +(span / (cuts.length + 1)).toFixed(1), dark_pct: Math.round(100 * dark / Math.max(1, n)), cut_times: cuts.map(fmt).join(' '), audio: st });
+      }
+      v.playbackRate = 1; v.muted = true; v.currentTime = 0; v.pause();
+      B.status = 'done';
+    } catch (e) { B.status = 'ERR ' + e; }
+  })();
+  return n;
+})()
