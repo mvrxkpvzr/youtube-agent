@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "editplan.schema.json",
+  "title": "Edit plan (render/editplan.<lang>.json) – scenes with their own clips, for an editor (lib/editplan.py)",
+  "type": "object",
+  "required": ["version", "project", "language", "fps", "resolution", "duration_s", "media", "scenes"],
+  "properties": {
+    "version": {"const": 1},
+    "project": {"type": "string"},
+    "language": {"enum": ["cs", "de"]},
+    "fps": {"enum": [24, 25, 30]},
+    "resolution": {"enum": ["1920x1080", "3840x2160"]},
+    "duration_s": {"type": "number", "exclusiveMinimum": 0},
+    "background": {"type": "string", "pattern": "^#[0-9a-fA-F]{6}$"},
+    "transition": {"$ref": "#/$defs/transition", "description": "Default between consecutive video clips"},
+    "media": {
+      "type": "object",
+      "description": "Media bin. Keys M001…; paths relative to the project",
+      "patternProperties": {
+        "^M[0-9]{3,}$": {
+          "type": "object",
+          "required": ["path", "kind", "sha256"],
+          "properties": {
+            "path": {"type": "string"},
+            "kind": {"enum": ["video", "image", "audio"]},
+            "duration_s": {"type": ["number", "null"]},
+            "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            "made_by": {"type": "string", "description": "Tool that produced it, e.g. render.kinetic, render.photo_kenburns+panel3d"},
+            "asset_id": {"type": "string", "pattern": "^A[0-9]{3,}$"},
+            "source_ids": {"type": "array", "items": {"type": "string"}}
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "scenes": {
+      "type": "array", "minItems": 1,
+      "description": "In playback order; each scene starts where the previous one ends. Clip times are relative to the scene",
+      "items": {
+        "type": "object",
+        "required": ["id", "dur_s", "video", "audio"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^SC[0-9]{3}$"},
+          "dur_s": {"type": "number", "exclusiveMinimum": 0},
+          "video": {"type": "array", "items": {"$ref": "#/$defs/visual"}},
+          "audio": {"type": "array", "items": {"$ref": "#/$defs/sound"}},
+          "text": {"type": "array", "items": {"$ref": "#/$defs/text"}}
+        }
+      }
+    },
+    "global_audio": {"type": "array", "items": {"$ref": "#/$defs/sound"}, "description": "Beds across scenes; at_s is absolute"},
+    "inputs_sha256": {"type": "object", "additionalProperties": {"type": "string"}},
+    "export": {
+      "type": "object",
+      "properties": {
+        "engine": {"enum": ["artcraft"]},
+        "format": {"enum": ["webm", "mp4"], "description": "mp4 needs an H.264 encoder in the browser (Chrome, not open-source Chromium)"},
+        "quality": {"enum": ["low", "medium", "high", "very_high"]}
+      }
+    }
+  },
+  "$defs": {
+    "transition": {
+      "type": "object", "required": ["type"],
+      "properties": {"type": {"enum": ["cut", "fade", "fadeblack"]}, "dur_s": {"type": "number", "minimum": 0}}
+    },
+    "fades": {"properties": {"fade_in_s": {"type": "number", "minimum": 0}, "fade_out_s": {"type": "number", "minimum": 0}}},
+    "visual": {
+      "type": "object", "required": ["media", "at_s", "dur_s"],
+      "allOf": [{"$ref": "#/$defs/fades"}],
+      "properties": {
+        "media": {"type": "string"}, "at_s": {"type": "number"}, "dur_s": {"type": "number", "exclusiveMinimum": 0},
+        "in_s": {"type": "number", "minimum": 0}, "fit": {"enum": ["cover", "contain"]},
+        "zoom_from": {"type": "number"}, "zoom_to": {"type": "number"},
+        "transition_in": {"$ref": "#/$defs/transition"}, "template": {"type": "string"}
+      }
+    },
+    "sound": {
+      "type": "object", "required": ["media", "at_s", "dur_s"],
+      "allOf": [{"$ref": "#/$defs/fades"}],
+      "properties": {
+        "media": {"type": "string"}, "at_s": {"type": "number"}, "dur_s": {"type": "number", "exclusiveMinimum": 0},
+        "in_s": {"type": "number", "minimum": 0}, "gain_db": {"type": "number"}, "role": {"enum": ["narration", "bed", "music", "sfx"]}
+      }
+    },
+    "text": {
+      "type": "object", "required": ["content", "at_s", "dur_s"],
+      "allOf": [{"$ref": "#/$defs/fades"}],
+      "properties": {
+        "content": {"type": "string", "minLength": 1}, "at_s": {"type": "number"}, "dur_s": {"type": "number", "exclusiveMinimum": 0},
+        "style": {"enum": ["subtitle", "title", "lower_third"]}
+      }
+    }
+  }
+}

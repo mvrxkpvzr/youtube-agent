@@ -70,15 +70,21 @@ def fit_clip(src, out, L, fps, overlay, enc, start=0.0):
     run([ff, "-y", "-hide_banner", "-loglevel", "error", *inputs, "-filter_complex", vf, "-map", "[v]", "-an",
          "-frames:v", str(n), "-pix_fmt", "yuv420p", *enc, str(out)])
 
-def render(proj, lang, preview=True):
+def render_shots(proj, lang, preview=True, codec="h264"):
+    """Every shot as its own clip (shot length + one transition overlap), in work_<lang>/shotNNN.mp4 (codec="vp9": .webm,
+    which open-source Chromium can decode; the headless ArtCraft editor in the cloud has no H.264).
+    Returns shots, [(clip, shot length)], total, transition length and type. Also the input of an editor (lib/editplan)."""
     ff = ffmpeg(); fps = B["fps"]; pace = load_shotlist(proj, lang).get("pace", {})
     X = pace.get("xfade_s", B["xfade_s"]); transition = pace.get("transition", B.get("transition", "fadeblack"))
     enc = ["-c:v", "libx264", "-preset", "veryfast" if preview else "slow", "-crf", "20" if preview else "16"]
+    ext = ".mp4"
+    if codec == "vp9":
+        enc = ["-c:v", "libvpx-vp9", "-deadline", "realtime", "-cpu-used", "8", "-row-mt", "1", "-b:v", "0", "-crf", "24" if preview else "18"]; ext = ".webm"
     work = proj / "render" / f"work_{lang}"; work.mkdir(parents=True, exist_ok=True)
     shots, total = plan(proj, lang); clips = []
     for i, s in enumerate(shots):
         L = s["dur"] + (X if i < len(shots) - 1 else 0); n = max(int(round(L * fps)), 2)
-        out = work / f"shot{i:03}.mp4"
+        out = work / f"shot{i:03}{ext}"
         ov = source_overlay(s["source"], work / f"shot{i:03}.src.png") if s["source"] else None
         if s["template"] == "motion":  # own pre-rendered 3D/motion clip (Blender, fx3d), path relative to the project
             fit_clip(proj / s["params"]["file"], out, L, fps, ov, enc, start=s["params"].get("start_s", 0.0))
@@ -98,6 +104,12 @@ def render(proj, lang, preview=True):
         run([ff, "-y", "-hide_banner", "-loglevel", "error", "-loop", "1", "-framerate", str(fps), "-i", str(png), "-vf", vf,
              "-frames:v", str(n), *enc, str(out)])
         clips.append((out, s["dur"]))
+    return shots, clips, total, X, transition
+
+def render(proj, lang, preview=True):
+    ff = ffmpeg(); fps = B["fps"]
+    shots, clips, total, X, transition = render_shots(proj, lang, preview)
+    work = proj / "render" / f"work_{lang}"
     # xfade chain; long videos are pre-joined in chunks (one ffmpeg with 100+ inputs ran out of 15 GB RAM)
     def chain(cs):
         inputs, parts, last, off = [], [], "[0:v]", 0.0

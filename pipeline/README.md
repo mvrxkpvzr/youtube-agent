@@ -23,15 +23,18 @@ $PY -I pipeline/tools_lexicon_probe.py piper_cs cs "<termín>" "<věta s {}>" va
 | `lib/graphics.py` | šablony: title, number, quote, source card (s překladem citace), timeline, photo, generic + řádek „Zdroj: …“ | ✅ vizuálně zkontrolováno |
 | `lib/render.py` | pomalý zoom na kartách, prolínání přes tmu, úprava hlasu (HP, kompresor, limiter), dvouprůchodová normalizace na −14 LUFS | ✅ |
 | `lib/qa.py` | rozlišení, fps, kodeky, LUFS, true peak, černé úseky, statický obraz, titulky, zpětný přepis, validátor, licence hlasu | ✅ (zachytil 3 skutečné chyby, viz výsledky) |
+| `lib/editplan.py` | střihový plán `render/editplan.<lang>.json` (scény s vlastními klipy, zvukem, titulky, přechody; schéma `schemas/editplan.schema.json`) a jeho převod na časovou osu editoru | ✅ `tests/test_editplan.py` + testovací projekt |
+| `lib/artcraft.py` + `artcraft/` | střih a export v **editoru ArtCraftu** bez obsluhy (`vid.py artcraft`), master do mp4, viz `artcraft/README.md` | ✅ testovací projekt fyre7 |
+| `lib/verify_export.py` | ověří export proti plánu: přehratelnost, délka, časová osa editoru, obraz klip po klipu, hlas po scénách, černé úseky | ✅ |
 | `validate.py` | schémata a křížové vazby tvrzení, zdrojů a assetů | ✅ 5/5 negativních testů |
 | `lib/flashcheck.py` | fotosenzitivní blikání (WCAG 2.2 + EA IRIS) v QA; měřicí kód převzatý z konradre/video-production-skills (MIT, `third_party/`) | ✅ selftest 36/36, `tests/test_flashcheck.py`, Fyre v1.3: 0 záblesků |
 | `otio_export.py` | časová osa renderu jako `.otio` + CMX 3600 `.edl` pro DaVinci Resolve / Kdenlive (záloha k ArtCraftu), kontrola délky a zastaralého renderu | ✅ `tests/test_otio_export.py`, kopie Fyre v1.3; otevření v Resolve netestováno |
 | `craft_check.py` | řemeslo podle `knowledge/`: hook a první otázka, mezery bez beatu, AI fráze, rytmus vět, „a pak × ale/proto“, tempo, délky záběrů, mix obrazu, humor, hudba a SFX, délka názvu → `craft_report.<lang>.md` | ✅ testy + kopie pilotu Fyre |
 | `visual_plan.py` | manifest vizuálních zdrojů (`visual_sources.jsonl`, práva A–F) + vizuální plán scén → `visual_plan.<lang>.md` | ✅ testy |
 | `edl.py` | střihový list před drahým renderem → `render/edl.<lang>.json` + `.csv` (přenositelný do editoru) | ✅ testy + Fyre |
-| `gates.py` | brány kvality Q1–Q7 → `quality_gates.<lang>.json`; `vid.py render --final` vyžaduje Q1–Q5 | ✅ testy |
+| `gates.py` | brány kvality Q1–Q7 → `quality_gates.<lang>.json`; `vid.py render --final` i `vid.py artcraft --final` vyžadují Q1–Q5 | ✅ testy |
 
-Testy: `pipeline/tests/test_validate.py`, `pipeline/tests/test_asr_compare.py`, `pipeline/tests/test_knowledge_checks.py` (jen stdlib + jsonschema), `test_flashcheck.py`, `test_otio_export.py`.
+Testy: `pipeline/tests/test_validate.py`, `pipeline/tests/test_asr_compare.py`, `pipeline/tests/test_knowledge_checks.py` (jen stdlib + jsonschema), `test_flashcheck.py`, `test_otio_export.py`, `test_editplan.py`, `test_verify_export.py`.
 Externí kód a jeho hodnocení: `docs/external-skills/README.md`.
 
 **Zatím chybí:** hudba a SFX (není licencovaná knihovna), fotografie a klipy (šablona `photo_kenburns` existuje, ale je netestovaná), Remotion (zatím není potřeba).

@@ -5,7 +5,9 @@
   vid.py audio <project> --lang cs            # join scenes -> narration.wav + timings
   vid.py subs <project> --lang cs             # .srt from approved text
   vid.py mix <project> --lang cs              # narration + music (music_cue) + SFX -> mix.wav
-  vid.py render <project> --lang cs [--final]
+  vid.py render <project> --lang cs [--final] [--editor artcraft]   # artcraft: cut in ArtCraft's editor (see editplan)
+  vid.py editplan <project> --lang cs [--burn-subs]   # shots + narration + bed -> render/editplan.<lang>.json
+  vid.py artcraft <project> --lang cs [--final] [--burn-subs]   # editplan -> ArtCraft editor -> export -> verify -> mp4
   vid.py qa <project> --lang cs
   vid.py all <project> --lang cs              # voice→check→audio→subs→mix→render→qa, stops on errors
   vid.py sfxlib _                             # (re)build own synthesised SFX in pipeline/sfx/own
@@ -20,9 +22,23 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from lib import voice as V, asr_check as A, audio as AU, subtitles as S, render as R, qa as Q, mix as MX
 from lib.common import stale_steps
 
+def final_gates(proj, a, cmd):
+    """A final render (FFmpeg or ArtCraft) needs quality gates Q1–Q5, or --override-gates "reason", which is logged."""
+    import edl, gates
+    edl.build(proj, a.lang)
+    doc = gates.run(proj, a.lang, "Q5"); failed = [g for g, r in doc["quality"].items() if r["status"] == "fail"]
+    if failed and not a.override_gates:
+        for g in failed: print(f"  {g} FAIL {doc['quality'][g]['name']}", *[f"\n    ✗ {f}" for f in doc["quality"][g]["fail"][:5]])
+        sys.exit(f"STOP: finální render vyžaduje brány Q1–Q5 (selhalo {', '.join(failed)}). Oprav fázi, nebo --override-gates \"důvod\".")
+    if failed:
+        log = proj / "review" / "gate_overrides.md"; log.parent.mkdir(exist_ok=True)
+        with open(log, "a", encoding="utf-8") as f: f.write(f"- {time.strftime('%Y-%m-%d %H:%M')} {cmd} --final {a.lang} přes {', '.join(failed)}: {a.override_gates}\n")
+        print(f"  POZOR: brány {', '.join(failed)} přeskočeny, důvod zapsán do review/gate_overrides.md")
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("cmd"); ap.add_argument("project"); ap.add_argument("--lang", default="cs")
     ap.add_argument("--engine"); ap.add_argument("--force", action="store_true"); ap.add_argument("--final", action="store_true")
+    ap.add_argument("--editor", choices=["ffmpeg", "artcraft"], default="ffmpeg"); ap.add_argument("--burn-subs", action="store_true")
     ap.add_argument("--override-gates", metavar="REASON", help="render --final despite failing quality gates; the reason is recorded")
     a = ap.parse_args(); proj = Path(a.project).resolve(); t0 = time.time()
     def step(name, fn):
@@ -54,18 +70,17 @@ def main():
             if not (proj / f"shotlist.{a.lang}.json").exists() or "music" not in json.loads((proj / f"shotlist.{a.lang}.json").read_text()):
                 print("[mix] přeskočeno – střihový plán nemá blok music"); continue
             out, used = step("mix", lambda: MX.mix(proj, a.lang)); print(f"  {out.name}: {len(used)} efektů", *[f"{t}s {n}" for t, n in used])
+        elif c == "editplan":
+            from lib import editplan as EP
+            out, plan = step("editplan", lambda: EP.build(proj, a.lang, preview=not a.final, burn_subtitles=a.burn_subs))
+            errs = EP.check(plan); print(f"  {out.name}: {len(plan['scenes'])} scén, {len(plan['media'])} médií, {plan['duration_s']:.1f} s", *errs)
+        elif c == "artcraft" or (c == "render" and a.editor == "artcraft"):
+            from lib import artcraft as AC
+            if a.final: final_gates(proj, a, "artcraft")
+            out, rep, rep2, er = step("artcraft", lambda: AC.assemble(proj, a.lang, preview=not a.final, burn_subtitles=a.burn_subs))
+            print(f"  {out.name}: editor {er['wall_s']:.0f} s, ověřeno: {rep.name}, {rep2.name}")
         elif c == "render":
-            if a.final:
-                import edl, gates
-                edl.build(proj, a.lang)
-                doc = gates.run(proj, a.lang, "Q5"); failed = [g for g, r in doc["quality"].items() if r["status"] == "fail"]
-                if failed and not a.override_gates:
-                    for g in failed: print(f"  {g} FAIL {doc['quality'][g]['name']}", *[f"\n    ✗ {f}" for f in doc["quality"][g]["fail"][:5]])
-                    sys.exit(f"STOP: finální render vyžaduje brány Q1–Q5 (selhalo {', '.join(failed)}). Oprav fázi, nebo --override-gates \"důvod\".")
-                if failed:
-                    log = proj / "review" / "gate_overrides.md"; log.parent.mkdir(exist_ok=True)
-                    with open(log, "a", encoding="utf-8") as f: f.write(f"- {time.strftime('%Y-%m-%d %H:%M')} render --final {a.lang} přes {', '.join(failed)}: {a.override_gates}\n")
-                    print(f"  POZOR: brány {', '.join(failed)} přeskočeny, důvod zapsán do review/gate_overrides.md")
+            if a.final: final_gates(proj, a, "render")
             out, n, tot = step("render", lambda: R.render(proj, a.lang, preview=not a.final)); print(f"  {out.name}: {n} záběrů, {tot:.1f} s")
         elif c == "qa":
             vid = proj / "render" / (f"final.{a.lang}.mp4" if a.final else f"preview.{a.lang}.mp4")
