@@ -63,6 +63,12 @@ def qa(proj, lang, video):
     sl = json.loads((proj / f"shotlist.{lang}.json").read_text(encoding="utf-8"))
     ph = [f"{sc['id']} ({v['params'].get('ref','')})" for sc in sl["scenes"] for v in sc["visuals"] if v["template"] == "clip_placeholder"]
     if ph: Wn.append(f"čeká na vložení {len(ph)} klipů (práva + pípnutí): " + "; ".join(ph))
+    # photosensitive flashes (WCAG 2.2 / EA IRIS), measuring code vendored from konradre/video-production-skills (MIT)
+    from .flashcheck import check as flash_check
+    fl = flash_check(video); (video.parent / f"{video.stem}.flash.json").write_text(json.dumps(fl, ensure_ascii=False, indent=1))
+    if fl["status"] == "skipped": Wn.append(f"kontrola blikání NEPROBĚHLA: {fl['reason']}")
+    for lvl, label, det in fl["rows"]:
+        (E if lvl == "FAIL" else Wn if lvl == "WARN" else ok).append(f"blikání – {label}: {det}")
     Wn.append("RUČNĚ: poslech celé stopy, kontrola výslovnosti jmen, vizuální kontrola každé karty, kontrola citací na obrazovce")
     rep = proj / f"qa_report.{lang}.md"
     rep.write_text(f"# QA report – {proj.name} ({lang})\n\nVideo: `{video.relative_to(proj)}` · délka {p['duration']:.1f} s\n\n"
