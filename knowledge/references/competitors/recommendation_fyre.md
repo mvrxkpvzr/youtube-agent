@@ -29,7 +29,7 @@ Obraz a zvuk (vše vlastní výroba):
 - **Grafy** s jednoslovným českým titulkem (TQ-22; O0414, O0418).
 - **Rekonstruované obrazovky** (TQ-23; O0317) a 2–3 jednoduché 3D modely (stan, letadlo, hromada peněz proti známému objektu; TQ-20; O0197, O0201).
 - **Tempo**: háček 15–25 změn obrazu za minutu, střed 6–12 (TQ-27; O0005, O0113, O0409, O0264). Měřit stejným nástrojem.
-- **Hudba** nízko, medián kolem −24 dB naší metodou (TQ-26; O0423, O0165, O0012); 2–4 tiché pauzy 3–8 s na zlomových místech (TQ-24; O0301, O0166); ruchy místo hudby v noci ve stanech (TQ-25; O0344).
+- **Hudba** nízko podle `knowledge/09` (15–20 dB pod hlasem; náš orientační údaj −24 dB je relativní měření v prohlížeči, ne cíl mixu) (TQ-26; O0423, O0165, O0012); 2–4 tiché pauzy 3–8 s na zlomových místech (TQ-24; O0301, O0166); ruchy místo hudby v noci ve stanech (TQ-25; O0344).
 
 ## Návrh A/B testu (jen tam, kde to jde levně)
 - **Háček A**: datovaný studený začátek (příjezd hostů) → **Háček B**: montáž slibů a tvrdý střih na realitu. Měřit

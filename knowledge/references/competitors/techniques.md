@@ -203,8 +203,8 @@ Formát:
 - Co: hudba běží téměř stále, ale hluboko pod hlasem.
 - Doloženo: O0423 (Modern MBA, −26 až −29 dB), O0165 (Wendover, −27 až −30 dB), O0076 (Company Man, −23,5 dB), O0012 (ColdFusion, −19,5 dB), O0438 (Business Casual, −17 až −18 dB)
 - Proč funguje (interpretace): vážné vyšetřovací kanály drží hudbu níž; hlasitější podložka působí jako „business entertainment“.
-- Jak u nás (návrh pro pipeline): cílit medián podložky kolem −24 dB (naše měření stejnou metodou), u svědectví níž.
-- Riziko / kdy nepoužít: čísla jsou relativní měření v prohlížeči, ne LUFS; ověřit v mixu.
+- Jak u nás (návrh pro pipeline): držet podložku na tiché straně podle `knowledge/09`; hotový střih změřit stejnou metodou a porovnat se vzorkem (orientačně kolem −24 dB), u svědectví níž.
+- Riziko / kdy nepoužít: −24 dB je relativní měření celkové hladiny v prohlížeči (ne LUFS, ne odstup od hlasu) a nelze ho srovnávat s cílem playbooku. Pro mix platí `knowledge/09` (hudba 15–20 dB pod hlasem; pipeline `level_under_voice_db` −21, v mezerách −13); toto číslo slouží jen ke srovnání kanálů mezi sebou.
 
 ### TQ-27 Rychlý háček, klidnější střed
 - Co: první 1–2 minuty mají výrazně víc střihů než zbytek videa.
